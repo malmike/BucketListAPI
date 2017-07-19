@@ -4,6 +4,7 @@
 [![Code Health](https://landscape.io/github/malmike/BucketListAPI/master/landscape.svg?style=flat)](https://landscape.io/github/malmike/BucketListAPI/master)
 [![Code Climate](https://codeclimate.com/github/malmike/BucketListAPI/badges/gpa.svg)](https://codeclimate.com/github/malmike/BucketListAPI)
 [![Issue Count](https://codeclimate.com/github/malmike/BucketListAPI/badges/issue_count.svg)](https://codeclimate.com/github/malmike/BucketListAPI)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/057f34a9f5374707b86d72378320f2ba)](https://www.codacy.com/app/malmike/BucketListAPI?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=malmike/BucketListAPI&amp;utm_campaign=Badge_Grade)
 
 This is an API for a bucket list designed using flask framework for python
 
