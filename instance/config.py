@@ -12,14 +12,14 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api"
 
 
-class DevelopmentConfig(object):
+class DevelopmentConfig(Config):
     """
     Contains the development configurations for the application
     """
     DEBUG = True
 
 
-class TestConfig(object):
+class TestConfig(Config):
     """
     Contains the configurations used while testing the application
     """
@@ -28,19 +28,9 @@ class TestConfig(object):
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/test_db"
 
 
-class ProductionConfig(object):
+class ProductionConfig(Config):
     """
     Contains configurations for the production environment
     """
     DEBUG = False
     TESTING = False
-
-"""
-Dictionary used to access the various application configurations
-"""
-app_config = {
-    'development': DevelopmentConfig,
-    'testing': TestConfig,
-    'production': ProductionConfig
-}
-
