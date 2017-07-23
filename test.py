@@ -1,5 +1,5 @@
 import unittest
-from tests.test_db import Db_tests
 
-if __name__ == "__main__":
-    unittest.main
+suite = unittest.TestLoader()
+
+unittest.TextTestRunner(verbosity=1).run(suite)
