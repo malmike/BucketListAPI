@@ -10,7 +10,7 @@ class Config(object):
     TESTING = False
     SECRET = 'KJI38US783KJW92MOY'
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api"
-
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
     """
