@@ -9,7 +9,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     SECRET = 'KJI38US783KJW92MOY'
-    SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///bucketlist_api"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class DevelopmentConfig(Config):
@@ -25,7 +25,7 @@ class TestConfig(Config):
     """
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://localhost/test_db"
+    SQLALCHEMY_DATABASE_URI = "sqlite://"
 
 
 class ProductionConfig(Config):
