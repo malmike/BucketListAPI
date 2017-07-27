@@ -8,6 +8,7 @@ from sqlalchemy import inspect
 
 from instance import ENVIRONMENTS
 from myapp import create_app, db
+from myapp.models.user import User
 
 
 class BaseCase(TestCase):
@@ -33,6 +34,18 @@ class BaseCase(TestCase):
             db.drop_all()
             db.create_all()
 
+        self.populate_db()
+
+
+    def populate_db(self):
+        """
+        Method is used to populate the database with test data
+        """
+        user = User('test2@test.com', 'test')
+        user2 = User('test2@test.com', 'test')
+        db.session.add(user)
+        db.session.add(user2)
+        db.session.commit()
 
     def tearDown(self):
         """
@@ -41,3 +54,4 @@ class BaseCase(TestCase):
         """
         db.session.remove()
         db.drop_all()
+
