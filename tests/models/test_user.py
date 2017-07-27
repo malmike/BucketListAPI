@@ -21,3 +21,14 @@ class UserTests(BaseCase):
             user.id,
             "No data addded, so the table is not created"
         )
+
+    def test_that_user_is_inserted_in_db(self):
+        """
+        Method checks that a user is added to the data
+        """
+        user = User.query.filter_by(id=1).first()
+        self.assertEqual(
+            user.email,
+            "test@test.com",
+            "User was not created"
+        )
