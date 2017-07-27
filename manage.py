@@ -19,7 +19,7 @@ app = create_app(ENVIRONMENTS.get(ENV))
 
 COV = coverage.Coverage(
     branch = True,
-    include = 'myapp',
+    include = 'myapp/*',
     omit = [
         'tests/*',
         'instance/*'
@@ -49,12 +49,12 @@ def cov():
         COV.use_cache(True)
         COV.stop()
         COV.save()
-        # print('Coverage report:')
-        # COV.report()
-        # basedir = os.path.abspath(os.path.dirname(__file__))
-        # covdir = os.path.join(basedir, 'tmp/coverage')
-        # COV.html_report(directory=covdir)
-        # print('HTML version: file://%s/index.html' % covdir)
+        print('Coverage report:')
+        COV.report()
+        basedir = os.path.abspath(os.path.dirname(__file__))
+        covdir = os.path.join(basedir, 'tmp/coverage')
+        COV.html_report(directory=covdir)
+        print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
         return 0
     return 1
