@@ -26,7 +26,6 @@ class TestConfig(Config):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/test_db"
-    CC_TEST_REPORTER_ID = "392653690efc9e65af92588e76d5d83f4c5660d20ee402b591b7df0035b60b7d"
 
 
 class ProductionConfig(Config):
