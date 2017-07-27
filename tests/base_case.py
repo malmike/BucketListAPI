@@ -4,9 +4,11 @@ configurations of the tests. It creates the flask test
 environment in which the tests can run
 """
 from flask_testing import TestCase
+from sqlalchemy import inspect
 
-from instance import environments
+from instance import ENVIRONMENTS
 from myapp import create_app, db
+
 
 class BaseCase(TestCase):
     """
@@ -17,14 +19,20 @@ class BaseCase(TestCase):
         """
         Creates a flask instance for testing
         """
-        return create_app(environments['testing'])
+        return create_app(ENVIRONMENTS['testing'])
 
     def setUp(self):
         """
         Sets up the default configurations, and in this case creates
         the database to be used
         """
-        db.create_all()
+        self.app = self.create_app()
+        self.client = self.app.test_client
+        with self.app.app_context():
+            db.session.close()
+            db.drop_all()
+            db.create_all()
+
 
     def tearDown(self):
         """
