@@ -3,7 +3,6 @@ Script contains commands that can be called from the command line
 to a Manager instance, for the flask application
 """
 import os
-import sys
 import unittest
 import coverage
 
