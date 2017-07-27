@@ -15,5 +15,5 @@ install:
   - "pip install coveralls"
 
 # command to run tests
-script: coverage run run_tests.py
+script: python manage.py cov
 after_success: coveralls
