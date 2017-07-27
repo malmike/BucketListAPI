@@ -29,7 +29,7 @@ class TestConfig(Config):
     """
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://root:root@localhost/test_db"
+    SQLALCHEMY_DATABASE_URI = "postgresql://ocalhost/test_db"
     BCRYPT_LOG_ROUNDS = 4
 
 
