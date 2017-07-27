@@ -2,13 +2,15 @@
 The script contains the configurations for the bucket list api
 application
 """
+import os
+
 class Config(object):
     """
     Contains the default configurations for the app
     """
     DEBUG = False
     TESTING = False
-    SECRET = 'KJI38US783KJW92MOYHSYE4837HNFYNE8347SH873UD384UFYHE'
+    SECRET = os.getenv('SECRET') or 'KJI38US783KJW92MOYHSYE4837HNFYNE8347SH873UD384UFYHE'
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api_dev"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
