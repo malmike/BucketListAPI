@@ -48,7 +48,7 @@ class BaseCase(TestCase):
         """
         Method adds users to the database
         """
-        user = User('test2@test.com', 'test')
+        user = User('test@test.com', 'test')
         user2 = User('test2@test.com', 'test')
         db.session.add(user)
         db.session.add(user2)
