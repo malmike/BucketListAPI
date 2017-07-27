@@ -1,7 +1,5 @@
 # BucketListAPI
-[![Build Status](https://travis-ci.org/malmike/BucketListAPI.svg?branch=master)](https://travis-ci.org/malmike/BucketListAPI)
 [![Codeship Status for malmike/BucketListAPI](https://app.codeship.com/projects/77766f50-54e4-0135-1058-2a73e0087811/status?branch=master)](https://app.codeship.com/projects/235425)
-[![Coverage Status](https://coveralls.io/repos/github/malmike/BucketListAPI/badge.svg?branch=master)](https://coveralls.io/github/malmike/BucketListAPI?branch=master)
 [![Test Coverage](https://codeclimate.com/github/malmike/BucketListAPI/badges/coverage.svg)](https://codeclimate.com/github/malmike/BucketListAPI/coverage)
 [![Code Health](https://landscape.io/github/malmike/BucketListAPI/master/landscape.svg?style=flat)](https://landscape.io/github/malmike/BucketListAPI/master)
 [![Code Climate](https://codeclimate.com/github/malmike/BucketListAPI/badges/gpa.svg)](https://codeclimate.com/github/malmike/BucketListAPI)
