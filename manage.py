@@ -41,7 +41,7 @@ def testing():
     return 1
 
 @MANAGER.command
-def cov():
+def test_coverage():
     COV.start()
     tests = unittest.TestLoader().discover('tests', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity = 1).run(tests)
