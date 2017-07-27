@@ -41,11 +41,19 @@ class BaseCase(TestCase):
         """
         Method is used to populate the database with test data
         """
+        self.add_test_users()
+
+
+    def add_test_users(self):
+        """
+        Method adds users to the database
+        """
         user = User('test2@test.com', 'test')
         user2 = User('test2@test.com', 'test')
         db.session.add(user)
         db.session.add(user2)
         db.session.commit()
+
 
     def tearDown(self):
         """
@@ -54,4 +62,5 @@ class BaseCase(TestCase):
         """
         db.session.remove()
         db.drop_all()
+
 
