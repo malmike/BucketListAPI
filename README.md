@@ -1,4 +1,5 @@
 # BucketListAPI
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/057f34a9f5374707b86d72378320f2ba)](https://www.codacy.com/app/malmike/BucketListAPI?utm_source=github.com&utm_medium=referral&utm_content=malmike/BucketListAPI&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/malmike/BucketListAPI.svg?branch=master)](https://travis-ci.org/malmike/BucketListAPI)
 [![Coverage Status](https://coveralls.io/repos/github/malmike/BucketListAPI/badge.svg?branch=master)](https://coveralls.io/github/malmike/BucketListAPI?branch=master)
 [![Code Health](https://landscape.io/github/malmike/BucketListAPI/master/landscape.svg?style=flat)](https://landscape.io/github/malmike/BucketListAPI/master)
