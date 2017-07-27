@@ -56,7 +56,6 @@ def test_coverage():
         COV.html_report(directory=covdir)
         print('HTML version: file://%s/index.html' % covdir)
         COV.xml_report()
-        COV.erase()
         return 0
     return 1
 
