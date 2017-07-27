@@ -11,12 +11,20 @@ class User(db.Model):
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, email, password):
-        self.email = email
-        self.password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
-        )
+    def __init__(self, email = None, password = None):
+        if email and password:
+            self.email = email
+            self.password = bcrypt.generate_password_hash(
+                password, app.config.get('BCRYPT_LOG_ROUNDS')
+            )
 
+
+    def user_email_exists(self, email):
+        """
+        Method is used to verify that a user email exists in
+        the database
+        """
+        pass
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
