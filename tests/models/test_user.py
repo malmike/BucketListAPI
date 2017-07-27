@@ -34,12 +34,14 @@ class UserTests(BaseCase, TestCase):
             "User was not created"
         )
 
+
     def test_that_the_password_is_encoded(self):
         """
         Method checks that password is encoded
         """
         user = User.query.filter_by(email="test@test.com").first()
         self.assertNotEqual(user.password, 'test')
+
 
     def test_that_password_are_encoded_differently(self):
         """
@@ -49,3 +51,23 @@ class UserTests(BaseCase, TestCase):
         user_test = User('test@test.com', 'test')
         user = User.query.filter_by(email="test@test.com").first()
         self.assertNotEqual(user.password, user_test.password)
+
+
+    def test_that_email_exists(self):
+        """
+        Method checks that method to verify if an email exists in the
+        database returns true
+        """
+        user = User()
+        check = user.user_email_exists("test@test.com")
+        self.assertTrue(check)
+
+
+    def test_that_email_doesnot_exists(self):
+        """
+        Method checks that method to verify if an email doesnot exists in the
+        database returns false
+        """
+        user = User()
+        check = user.user_email_exists("test@testing.com")
+        self.assertFalse(check)
