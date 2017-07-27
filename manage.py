@@ -13,26 +13,9 @@ from flask_migrate import Migrate, MigrateCommand
 from instance import ENVIRONMENTS
 from myapp import create_app, db
 
-ERR_STRING = """\n\tOption not provided
-        Enter: 'python manage.py --help'
-        to get list of available options
-        """
 
-try:
-    if sys.argv[1] and sys.argv[1] in ENVIRONMENTS:
-        app = create_app(ENVIRONMENTS.get(sys.argv[1]))
-    elif sys.argv[1] and sys.argv[1] == '--help':
-        print ('\n\nUsage:')
-        print ('\t"python run.py <environment>"')
-        print ('\t\tEnvironment Options:\n\t\t\t development \n\t\t\t production \n\t\t\t testing')
-        exit()
-    else:
-        print (ERR_STRING)
-        exit()
-
-except IndexError:
-    print (ERR_STRING)
-    exit()
+ENV = os.getenv('BUCKETLIST_ENV') or 'development'
+app = create_app(ENVIRONMENTS.get(ENV))
 
 COV = coverage.Coverage(
     branch = True,
@@ -48,9 +31,6 @@ MIGRATE = Migrate(app, db)
 MANAGER = Manager(app)
 MANAGER.add_command('db', MigrateCommand)
 
-@MANAGER.command
-def development():
-    app.run()
 
 @MANAGER.command
 def testing():
