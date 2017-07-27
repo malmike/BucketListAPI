@@ -10,6 +10,7 @@ class Config(object):
     """
     DEBUG = False
     TESTING = False
+    BCRYPT_LOG_ROUNDS = 13
     SECRET = os.getenv('SECRET') or 'KJI38US783KJW92MOYHSYE4837HNFYNE8347SH873UD384UFYHE'
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api_dev"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -19,6 +20,7 @@ class DevelopmentConfig(Config):
     Contains the development configurations for the application
     """
     DEBUG = True
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class TestConfig(Config):
@@ -27,7 +29,8 @@ class TestConfig(Config):
     """
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "postgresql://localhost/test_db"
+    SQLALCHEMY_DATABASE_URI = "postgresql://root:root@localhost/test_db"
+    BCRYPT_LOG_ROUNDS = 4
 
 
 class ProductionConfig(Config):
