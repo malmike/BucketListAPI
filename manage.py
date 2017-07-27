@@ -22,7 +22,8 @@ COV = coverage.Coverage(
     include = 'myapp/*',
     omit = [
         'tests/*',
-        'instance/*'
+        'instance/*',
+        'manage.py'
     ]
 )
 
