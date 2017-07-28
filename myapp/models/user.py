@@ -35,22 +35,8 @@ class User(db.Model):
         Method is used to verify that a user email exists in
         the database
         """
-        user = User.query.filter_by(email=email).first()
-        if user:
-            return user
-        return False
+        return True if User.query.filter_by(email=email).first() else False
 
-
-    def get_user(self, email, password):
-        """
-        Method is used to verify that a user with a set password
-        exists in the database
-        """
-        user = self.__user_email_exists(email)
-        if user:
-            check = bcrypt.check_password_hash(user.password, password)
-            return user if check else False
-        return False
 
 
     def add_user(self):
