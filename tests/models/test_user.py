@@ -34,12 +34,12 @@ class UserTests(BaseCase, TestCase):
         )
 
 
-    def test_password_is_encoded(self):
+    def test_password_is_not_readable(self):
         """
         Method checks that password is encoded
         """
         user = User.query.filter_by(email="test@test.com").first()
-        self.assertNotEqual(user.password, 'test')
+        self.assertEqual(user.password, 'Password is only writable')
 
 
     def test_encoding_not_similar(self):
@@ -82,11 +82,11 @@ class UserTests(BaseCase, TestCase):
         """
         Method checks that a user can be deleted from the database
         """
-        #Method that retrieves a test user from the database
+        #retrieve a test user from the database
         user = User.query.filter_by(email="test2@test.com").first()
         self.assertTrue(user)
 
-        #Method that deletes the user from the database
+        #delete the user from the database
         user.delete_user()
         verify_user = User.query.filter_by(email="test2@test.com").first()
         self.assertFalse(
