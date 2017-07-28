@@ -16,7 +16,7 @@ class User(db.Model):
             self.email = email
             self.password = bcrypt.generate_password_hash(
                 password, app.config.get('BCRYPT_LOG_ROUNDS')
-            )
+            ).decode()
 
 
     def __user_email_exists(self, email):
@@ -35,7 +35,12 @@ class User(db.Model):
         Method is used to verify that a user with a set password
         exists in the database
         """
-        pass
+        user = self.__user_email_exists(email)
+        if user:
+            check = bcrypt.check_password_hash( user.password, password )
+            return user if check else False
+        return False
+
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
