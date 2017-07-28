@@ -55,7 +55,9 @@ class User(db.Model):
         """
         Method is used to delete an existing user from the database
         """
-        pass
+        if self.__user_email_exists(self.email):
+            db.session.delete(self)
+            db.session.commit()
 
 
     def __repr__(self):
