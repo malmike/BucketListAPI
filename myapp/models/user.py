@@ -9,15 +9,26 @@ class User(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
+    _password = db.Column(db.String(255), nullable=False)
 
-    def __init__(self, email = None, password = None):
-        if email and password:
-            self.email = email
-            self.password = bcrypt.generate_password_hash(
-                password, app.config.get('BCRYPT_LOG_ROUNDS')
-            ).decode()
 
+    @property
+    def password(self):
+        """
+        Method used to set the class property password and allows one
+        access the _password property
+        """
+        return self._password
+
+
+    @password.setter
+    def password(self, password):
+        """
+        Method helps set the password property for the class
+        """
+        self._password = bcrypt.generate_password_hash(
+            password, app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
 
     def __user_email_exists(self, email):
         """
@@ -37,7 +48,7 @@ class User(db.Model):
         """
         user = self.__user_email_exists(email)
         if user:
-            check = bcrypt.check_password_hash( user.password, password )
+            check = bcrypt.check_password_hash(user.password, password)
             return user if check else False
         return False
 
