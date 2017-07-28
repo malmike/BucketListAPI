@@ -63,11 +63,11 @@ class BaseCase(TestCase):
         """
         user = User()
         returned_user = user.query.filter_by(id=1).first()
-        # bucketlist = BucketList(returned_user.id, 'test_bucketlist')
-        # bucketlist2 = BucketList(returned_user.id, 'test_bucketlist2')
-        # db.session.add(bucketlist)
-        # db.session.add(bucketlist2)
-        # db.session.commit()
+        bucketlist = BucketList(user_id=returned_user.id, name='test_bucketlist')
+        bucketlist2 = BucketList(user_id=returned_user.id, name='test_bucketlist2')
+        db.session.add(bucketlist)
+        db.session.add(bucketlist2)
+        db.session.commit()
 
 
     def tearDown(self):
