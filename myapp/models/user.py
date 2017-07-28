@@ -1,7 +1,8 @@
 """
 Script contains the model for a user
 """
-from .. import db, bcrypt, app
+from myapp import db, bcrypt, app
+from myapp.models.bucketlist import BucketList
 
 class User(db.Model):
     """
@@ -10,6 +11,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), unique=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
+    # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
+    bucketlist = db.relationship(
+        BucketList, backref='user', uselist=True, cascade='delete,all'
+    )
 
 
     @property
