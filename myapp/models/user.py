@@ -58,6 +58,8 @@ class User(db.Model):
         if self.__user_email_exists(self.email):
             db.session.delete(self)
             db.session.commit()
+            return True
+        return False
 
 
     def __repr__(self):
