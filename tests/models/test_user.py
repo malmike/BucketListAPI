@@ -60,7 +60,7 @@ class UserTests(BaseCase, TestCase):
         check = user.user_exists('test@test.com', 'test')
         self.assertTrue(check)
 
-    def test_email_with_password_mismatch(self):
+    def test_email_password_mismatch(self):
         """
         Method checks that if a person enters a mismatch of email and password
         they will get false
@@ -68,3 +68,16 @@ class UserTests(BaseCase, TestCase):
         user = User()
         check = user.user_exists('test@test.com', 'test2')
         self.assertFalse(check)
+
+
+    def test_add_user(self):
+        """
+        Method checks that add user method actually adds a user
+        to the database
+        """
+        user = User('test@adduser.com', 'test')
+        user.add_user()
+        self.assertTrue(
+            user.id,
+            "User doesnot contain id so he is not added to the db"
+        )
