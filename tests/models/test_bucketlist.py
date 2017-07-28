@@ -20,3 +20,15 @@ class BucketListTests(BaseCase, TestCase):
             bucketlist.id,
             "No data addded, so the table is not created"
         )
+
+
+    def test_bucketlist_is_inserted_in_db(self):
+        """
+        Method checks that a user is added to the data
+        """
+        bucketlist = BucketList.query.filter_by(id=1).first()
+        self.assertEqual(
+            bucketlist.bucketlist_name,
+            "test_bucketlist",
+            "User was not created"
+        )
