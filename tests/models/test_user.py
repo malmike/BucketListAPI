@@ -36,20 +36,34 @@ class UserTests(BaseCase, TestCase):
 
     def test_password_is_not_readable(self):
         """
-        Method checks that password is encoded
+        Method checks that password is not readable
         """
         user = User.query.filter_by(email="test@test.com").first()
         self.assertEqual(user.password, 'Password is only writable')
 
 
-    def test_encoding_not_similar(self):
+    def test_verify_password_true(self):
         """
-        Method that checks that the password is encoded
-        before storing in the database
+        Method that checks that the password is for the specific user
         """
-        user_test = User(email='test@test.com', password='test')
         user = User.query.filter_by(email="test@test.com").first()
-        self.assertNotEqual(user.password, user_test.password)
+        check = user.verify_password('test')
+        self.assertTrue(
+            check,
+            'Password, matches email so it should return true'
+        )
+
+
+    def test_verify_password_false(self):
+        """
+        Method that checks that the password is for the specific user
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        check = user.verify_password('testing')
+        self.assertFalse(
+            check,
+            "Password doesnot match email so it should return false"
+        )
 
 
     def test_add_user(self):
