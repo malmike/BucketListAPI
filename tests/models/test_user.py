@@ -57,7 +57,7 @@ class UserTests(BaseCase, TestCase):
         and password exists
         """
         user = User()
-        check = user.user_exists('test@test.com', 'test')
+        check = user.get_user('test@test.com', 'test')
         self.assertTrue(check)
 
     def test_email_password_mismatch(self):
@@ -66,7 +66,7 @@ class UserTests(BaseCase, TestCase):
         they will get false
         """
         user = User()
-        check = user.user_exists('test@test.com', 'test2')
+        check = user.get_user('test@test.com', 'test2')
         self.assertFalse(check)
 
 
@@ -103,12 +103,12 @@ class UserTests(BaseCase, TestCase):
         user = User()
 
         #Method that retrieves a test user from the database
-        test_user = user.user_exists('test2@test.com', 'test')
+        test_user = user.get_user('test2@test.com', 'test')
         self.assertTrue(test_user)
 
         #Method that deletes the user from the database
         test_user.delete_user()
-        verify_user = user.user_exists('test2@test.com', 'test')
+        verify_user = user.get_user('test2@test.com', 'test')
         self.assertFalse(
             verify_user,
             "User that is deleted should not exist in the database"

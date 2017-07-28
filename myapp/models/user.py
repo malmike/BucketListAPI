@@ -30,7 +30,7 @@ class User(db.Model):
         return False
 
 
-    def user_exists(self, email, password):
+    def get_user(self, email, password):
         """
         Method is used to verify that a user with a set password
         exists in the database
