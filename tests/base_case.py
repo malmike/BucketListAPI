@@ -9,6 +9,7 @@ from sqlalchemy import inspect
 from instance import ENVIRONMENTS
 from myapp import create_app, db
 from myapp.models.user import User
+from myapp.models.bucketlist import BucketList
 
 
 class BaseCase(TestCase):
@@ -42,16 +43,30 @@ class BaseCase(TestCase):
         Method is used to populate the database with test data
         """
         self.add_test_users()
+        self.add_test_bucketlists()
 
 
     def add_test_users(self):
         """
-        Method adds users to the database
+        Method adds users to the database for testing
         """
         user = User('test@test.com', 'test')
         user2 = User('test2@test.com', 'test')
         db.session.add(user)
         db.session.add(user2)
+        db.session.commit()
+
+
+    def add_test_bucketlists(self):
+        """
+        Method adds bucketlists to the database for testing
+        """
+        user = User()
+        returned_user = user.query.filter_by(id=1).first()
+        bucketlist = BucketList(returned_user.id, 'test_bucketlist')
+        bucketlist2 = BucketList(returned_user.id, 'test_bucketlist2')
+        db.session.add(bucketlist)
+        db.session.add(bucketlist2)
         db.session.commit()
 
 
