@@ -40,8 +40,10 @@ class User(db.Model):
 
     def verify_password(self, password):
         """
-
+        Method is used to verify a users password matches the
+        password passed
         """
+        pass
 
 
 
