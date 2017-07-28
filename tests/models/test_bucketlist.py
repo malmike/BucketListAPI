@@ -9,26 +9,12 @@ class BucketListTests(BaseCase, TestCase):
     """
     Class contains tests for the user model
     """
-
-    def test_bucketlist_table_created(self):
-        """
-        Method checks that the bucketlist table is created
-        """
-        bucketlist = BucketList.query.filter_by(id=1).first()
-        self.assertEqual(
-            1,
-            bucketlist.id,
-            "No data addded, so the table is not created"
-        )
-
-
     def test_bucketlist_is_inserted_in_db(self):
         """
         Method checks that a user is added to the data
         """
         bucketlist = BucketList.query.filter_by(id=1).first()
-        self.assertEqual(
-            bucketlist.bucketlist_name,
-            "test_bucketlist",
-            "User was not created"
-        )
+        self.assertEqual(bucketlist.name, "test_bucketlist", "Name not added")
+        self.assertEqual(bucketlist.user_id, 1, "User Id not added")
+        self.assertTrue(bucketlist.created)
+        self.assertTrue(bucketlist.modified)
