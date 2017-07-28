@@ -94,3 +94,23 @@ class UserTests(BaseCase, TestCase):
             user.id,
             "User doesnot contain id so he is not added to the db"
         )
+
+
+    def test_delete_user(self):
+        """
+        Method checks that a user can be deleted from the database
+        """
+        user = User()
+
+        #Method that retrieves a test user from the database
+        test_user = user.user_exists('test2@test.com', 'test')
+        self.assertTrue(test_user)
+
+        #Method that deletes the user from the database
+        test_user.delete_user()
+        verify_user = user.user_exists('test2@test.com', 'test')
+        self.assertFalse(
+            verify_user,
+            "User that is deleted should not exist in the database"
+        )
+
