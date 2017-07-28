@@ -46,7 +46,8 @@ class User(db.Model):
         """
         Method is used to add a user to the database
         """
-        pass
+        db.session.add(self)
+        db.session.commit()
 
 
     def __repr__(self):
