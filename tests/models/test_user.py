@@ -21,6 +21,7 @@ class UserTests(BaseCase, TestCase):
             "No data addded, so the table is not created"
         )
 
+
     def test_user_is_inserted_in_db(self):
         """
         Method checks that a user is added to the data
@@ -46,7 +47,7 @@ class UserTests(BaseCase, TestCase):
         Method that checks that the password is encoded
         before storing in the database
         """
-        user_test = User('test@test.com', 'test')
+        user_test = User(email='test@test.com', password='test')
         user = User.query.filter_by(email="test@test.com").first()
         self.assertNotEqual(user.password, user_test.password)
 
@@ -59,6 +60,7 @@ class UserTests(BaseCase, TestCase):
         user = User()
         check = user.get_user('test@test.com', 'test')
         self.assertTrue(check)
+
 
     def test_email_password_mismatch(self):
         """
@@ -75,7 +77,7 @@ class UserTests(BaseCase, TestCase):
         Method checks that add user method actually adds a user
         to the database
         """
-        user = User('test@adduser.com', 'test')
+        user = User(email='test@adduser.com', password='test')
         user.add_user()
         self.assertTrue(
             user.id,
@@ -88,7 +90,7 @@ class UserTests(BaseCase, TestCase):
         Method checks that add user method actually adds a user
         to the database
         """
-        user = User('test@test.com', 'test')
+        user = User(email='test@test.com', password='test')
         user.add_user()
         self.assertFalse(
             user.id,
