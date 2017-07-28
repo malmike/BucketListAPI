@@ -11,11 +11,11 @@ class BucketList(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
-    date_created = db.Column(
+    created = db.Column(
         db.DateTime,
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
-    date_modified = db.Column(
+    modified = db.Column(
         db.DateTime,
         default=datetime.now(tz=pytz.timezone('Africa/Kampala')),
         onupdate=datetime.now(tz=pytz.timezone('Africa/Kampala'))
