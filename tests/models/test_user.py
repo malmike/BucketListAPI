@@ -72,7 +72,8 @@ class UserTests(BaseCase, TestCase):
         to the database
         """
         user = User(email='test@adduser.com', password='test')
-        user.add_user()
+        check = user.add_user()
+        self.assertTrue(check, "User should be added")
         self.assertTrue(
             user.id,
             "User doesnot contain id so he is not added to the db"
@@ -85,7 +86,8 @@ class UserTests(BaseCase, TestCase):
         to the database
         """
         user = User(email='test@test.com', password='test')
-        user.add_user()
+        check = user.add_user()
+        self.assertFalse(check, "User should already exist")
         self.assertFalse(
             user.id,
             "User doesnot contain id so he is not added to the db"
