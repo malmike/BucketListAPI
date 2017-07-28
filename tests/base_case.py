@@ -50,8 +50,8 @@ class BaseCase(TestCase):
         """
         Method adds users to the database for testing
         """
-        user = User('test@test.com', 'test')
-        user2 = User('test2@test.com', 'test')
+        user = User(email='test@test.com', password='test')
+        user2 = User(email='test2@test.com', password='test')
         db.session.add(user)
         db.session.add(user2)
         db.session.commit()
@@ -63,11 +63,11 @@ class BaseCase(TestCase):
         """
         user = User()
         returned_user = user.query.filter_by(id=1).first()
-        bucketlist = BucketList(returned_user.id, 'test_bucketlist')
-        bucketlist2 = BucketList(returned_user.id, 'test_bucketlist2')
-        db.session.add(bucketlist)
-        db.session.add(bucketlist2)
-        db.session.commit()
+        # bucketlist = BucketList(returned_user.id, 'test_bucketlist')
+        # bucketlist2 = BucketList(returned_user.id, 'test_bucketlist2')
+        # db.session.add(bucketlist)
+        # db.session.add(bucketlist2)
+        # db.session.commit()
 
 
     def tearDown(self):
