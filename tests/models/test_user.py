@@ -3,8 +3,6 @@ Contains tests for the user model
 """
 from unittest import TestCase
 from tests.base_case import BaseCase
-
-from myapp import db
 from myapp.models.user import User
 
 class UserTests(BaseCase, TestCase):
@@ -23,7 +21,7 @@ class UserTests(BaseCase, TestCase):
             "No data addded, so the table is not created"
         )
 
-    def test_that_user_is_inserted_in_db(self):
+    def test_user_is_inserted_in_db(self):
         """
         Method checks that a user is added to the data
         """
@@ -35,7 +33,7 @@ class UserTests(BaseCase, TestCase):
         )
 
 
-    def test_that_the_password_is_encoded(self):
+    def test_password_is_encoded(self):
         """
         Method checks that password is encoded
         """
@@ -43,7 +41,7 @@ class UserTests(BaseCase, TestCase):
         self.assertNotEqual(user.password, 'test')
 
 
-    def test_that_password_are_encoded_differently(self):
+    def test_encoding_not_similar(self):
         """
         Method that checks that the password is encoded
         before storing in the database
