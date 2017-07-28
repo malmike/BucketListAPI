@@ -42,6 +42,13 @@ class User(db.Model):
         return False
 
 
+    def add_user(self):
+        """
+        Method is used to add a user to the database
+        """
+        pass
+
+
     def __repr__(self):
         return '<UserEmail %r>' % self.email
 
