@@ -19,7 +19,7 @@ class User(db.Model):
             )
 
 
-    def user_email_exists(self, email):
+    def __user_email_exists(self, email):
         """
         Method is used to verify that a user email exists in
         the database
@@ -28,6 +28,14 @@ class User(db.Model):
         if user:
             return user
         return False
+
+
+    def user_exists(self, email, password):
+        """
+        Method is used to verify that a user with a set password
+        exists in the database
+        """
+        pass
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
