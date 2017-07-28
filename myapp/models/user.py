@@ -15,10 +15,9 @@ class User(db.Model):
     @property
     def password(self):
         """
-        Method used to set the class property password and allows one
-        access the _password property
+        Method that is run when password property is called
         """
-        return self._password
+        return "Password is only writable"
 
 
     @password.setter
@@ -30,12 +29,19 @@ class User(db.Model):
             password, app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
 
+
     def __user_email_exists(self, email):
         """
         Method is used to verify that a user email exists in
         the database
         """
         return True if User.query.filter_by(email=email).first() else False
+
+
+    def verify_password(self, password):
+        """
+
+        """
 
 
 
