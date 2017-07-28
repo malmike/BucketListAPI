@@ -24,7 +24,10 @@ class User(db.Model):
         Method is used to verify that a user email exists in
         the database
         """
-        return True if User.query.filter_by(email=email).first() else False
+        user = User.query.filter_by(email=email).first()
+        if user:
+            return user
+        return False
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
