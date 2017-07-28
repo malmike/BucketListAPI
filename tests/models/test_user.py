@@ -81,3 +81,16 @@ class UserTests(BaseCase, TestCase):
             user.id,
             "User doesnot contain id so he is not added to the db"
         )
+
+
+    def test_no_repeated_users_added(self):
+        """
+        Method checks that add user method actually adds a user
+        to the database
+        """
+        user = User('test@test.com', 'test')
+        user.add_user()
+        self.assertFalse(
+            user.id,
+            "User doesnot contain id so he is not added to the db"
+        )
