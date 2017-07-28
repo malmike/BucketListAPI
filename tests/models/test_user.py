@@ -51,21 +51,20 @@ class UserTests(BaseCase, TestCase):
         self.assertNotEqual(user.password, user_test.password)
 
 
-    def test_that_email_exists(self):
+    def test_email_with_password_exists(self):
         """
-        Method checks that method to verify if an email exists in the
-        database returns true
+        Method checks that the method to verify if a user with a specific email
+        and password exists
         """
         user = User()
-        check = user.user_email_exists("test@test.com")
+        check = user.user_exists('test@test.com', 'test')
         self.assertTrue(check)
 
-
-    def test_that_email_doesnot_exists(self):
+    def test_email_with_password_mismatch(self):
         """
-        Method checks that method to verify if an email doesnot exists in the
-        database returns false
+        Method checks that if a person enters a mismatch of email and password
+        they will get false
         """
         user = User()
-        check = user.user_email_exists("test@testing.com")
+        check = user.user_exists('test@test.com', 'test2')
         self.assertFalse(check)
