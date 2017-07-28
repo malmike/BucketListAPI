@@ -43,8 +43,7 @@ class User(db.Model):
         Method is used to verify a users password matches the
         password passed
         """
-        pass
-
+        return bcrypt.check_password_hash(self._password, password)
 
 
     def add_user(self):
@@ -54,6 +53,8 @@ class User(db.Model):
         if not self.__user_email_exists(self.email):
             db.session.add(self)
             db.session.commit()
+            return True
+        return False
 
 
     def delete_user(self):
