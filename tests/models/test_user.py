@@ -52,26 +52,6 @@ class UserTests(BaseCase, TestCase):
         self.assertNotEqual(user.password, user_test.password)
 
 
-    def test_email_with_password_exists(self):
-        """
-        Method checks that the method to verify if a user with a specific email
-        and password exists
-        """
-        user = User()
-        check = user.get_user('test@test.com', 'test')
-        self.assertTrue(check)
-
-
-    def test_email_password_mismatch(self):
-        """
-        Method checks that if a person enters a mismatch of email and password
-        they will get false
-        """
-        user = User()
-        check = user.get_user('test@test.com', 'test2')
-        self.assertFalse(check)
-
-
     def test_add_user(self):
         """
         Method checks that add user method actually adds a user
@@ -102,15 +82,13 @@ class UserTests(BaseCase, TestCase):
         """
         Method checks that a user can be deleted from the database
         """
-        user = User()
-
         #Method that retrieves a test user from the database
-        test_user = user.get_user('test2@test.com', 'test')
-        self.assertTrue(test_user)
+        user = User.query.filter_by(email="test2@test.com").first()
+        self.assertTrue(user)
 
         #Method that deletes the user from the database
-        test_user.delete_user()
-        verify_user = user.get_user('test2@test.com', 'test')
+        user.delete_user()
+        verify_user = User.query.filter_by(email="test2@test.com").first()
         self.assertFalse(
             verify_user,
             "User that is deleted should not exist in the database"
