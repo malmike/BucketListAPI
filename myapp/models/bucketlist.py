@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 
 from myapp import db
+from myapp.models.bucketlist_item import BucketListItem
 
 
 class BucketList(db.Model):
@@ -23,6 +24,10 @@ class BucketList(db.Model):
         onupdate=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
+    bucketlist_item = db.relationship(
+        BucketListItem, backref='bucketlist_item', uselist=True, cascade='delete,all'
+    )
 
 
     def __bucketlist_exists(self, name):
