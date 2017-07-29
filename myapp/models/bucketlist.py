@@ -53,4 +53,5 @@ class BucketList(db.Model):
         return False
 
 
-
+    def __repr__(self):
+        return '<BucketList %r>' % self.name
