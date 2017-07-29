@@ -4,6 +4,7 @@ Contains tests for the bucketlist item model
 from unittest import TestCase
 from datetime import datetime
 from datetime import date
+
 from tests.base_case import BaseCase
 from myapp.models.bucketlist_item import BucketListItem
 
