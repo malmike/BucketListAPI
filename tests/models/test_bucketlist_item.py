@@ -26,7 +26,7 @@ class BucketListItemTests(BaseCase, TestCase):
         self.assertTrue(isinstance(item.finished_by, date))
 
 
-    def test_add_item(self):
+    def test_add_bucketlist_item(self):
         """
         Method checks that add bucketlist item method actually adds a bucketlist
         item to the database
