@@ -20,9 +20,8 @@ class BucketListItem(db.Model):
         default=datetime.now(tz=pytz.timezone('Africa/Kampala')),
         onupdate=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
-    expiry = db.Column(
-        db.DateTime,
+    finished_by = db.Column(
+        db.Date,
         nullable=False
     )
-    bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'), nullable=False)
-    
+    bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucket_list.id'), nullable=False)
