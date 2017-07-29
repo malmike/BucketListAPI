@@ -38,8 +38,7 @@ class User(BaseModel):
     @staticmethod
     def __item_exists(value):
         """
-        Method is used to verify that a user email exists in
-        the database
+        Method verifies that a user email exists in the database
         """
         return True if User.query.filter_by(email=value).first() else False
 
