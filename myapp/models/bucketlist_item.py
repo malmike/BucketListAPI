@@ -29,7 +29,6 @@ class BucketListItem(db.Model):
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucket_list.id'), nullable=False)
 
 
-
     def add_bucketlist_item(self):
         """
         Method is used to add a bucketlist item to the database
@@ -38,3 +37,12 @@ class BucketListItem(db.Model):
         db.session.commit()
         return True
 
+
+    def delete_bucketlist_item(self):
+        """
+        Method is used to add a bucketlist item to the database
+        """
+        db.session.delete(self)
+        db.session.commit()
+        return True
+    
