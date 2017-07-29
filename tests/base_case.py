@@ -62,7 +62,7 @@ class BaseCase(TestCase):
         Method adds bucketlists to the database for testing
         """
         user = User()
-        returned_user = user.query.filter_by(id=1).first()
+        returned_user = user.query.filter_by(email='test@test.com').first()
         bucketlist = BucketList(user_id=returned_user.id, name='test_bucketlist')
         bucketlist2 = BucketList(user_id=returned_user.id, name='test_bucketlist2')
         db.session.add(bucketlist)
