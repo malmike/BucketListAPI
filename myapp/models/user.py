@@ -35,7 +35,8 @@ class User(BaseModel):
         ).decode()
 
 
-    def __user_email_exists(self, email):
+    @staticmethod
+    def __user_email_exists(email):
         """
         Method is used to verify that a user email exists in
         the database
