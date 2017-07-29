@@ -24,7 +24,9 @@ class BucketList(BaseModel):
         Method is used to verify that a bucketlist name exists in
         the database
         """
-        return True if BucketList.query.filter_by(name=value).first() else False
+        if BucketList.query.filter_by(name=value).first():
+            return True
+        return False
 
 
     def add_bucketlist(self):
