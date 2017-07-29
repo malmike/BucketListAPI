@@ -18,6 +18,7 @@ class BucketListItem(BaseModel):
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucket_list.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
 
 
     def add_bucketlist_item(self):
