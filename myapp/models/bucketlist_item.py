@@ -1,9 +1,11 @@
 """
 Script contains the model for a bucketlist items
 """
-from myapp import db
 from datetime import datetime
 import pytz
+
+from myapp import db
+
 
 class BucketListItem(db.Model):
     """
