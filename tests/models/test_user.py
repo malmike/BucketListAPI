@@ -2,6 +2,7 @@
 Contains tests for the user model
 """
 from unittest import TestCase
+
 from tests.base_case import BaseCase
 from myapp.models.user import User
 
