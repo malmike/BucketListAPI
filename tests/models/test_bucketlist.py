@@ -68,3 +68,13 @@ class BucketListTests(BaseCase, TestCase):
             verify_bucketlist,
             "BucketList that is deleted should not exist in the database"
         )
+
+
+    def test_bucketlist_item_list(self):
+        """
+        Method tests that the bucketlist item relation in the bucketlist model
+        returns a list of bucketlist items specific to that bucketlist
+        """
+        bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
+        self.assertTrue(isinstance(bucketlist.bucketlist_item, list))
+
