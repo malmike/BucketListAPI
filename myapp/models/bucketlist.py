@@ -23,3 +23,11 @@ class BucketList(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 
+    def __bucketlist_exists(self, name):
+        """
+        Method is used to verify that a bucketlist name exists in
+        the database
+        """
+        return True if BucketList.query.filter_by(name=name).first() else False
+
+
