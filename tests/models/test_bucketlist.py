@@ -10,11 +10,11 @@ from myapp.models.user import User
 
 class BucketListTests(BaseCase, TestCase):
     """
-    Class contains tests for the user model
+    Class contains tests for the bucketlist model
     """
     def test_bucketlist_inserted_in_db(self):
         """
-        Method checks that a user is added to the data
+        Method checks that a bucketlist is added to the data
         """
         bucketlist = BucketList.query.filter_by(id=1).first()
         self.assertEqual(bucketlist.name, "test_bucketlist", "Name not added")
@@ -31,7 +31,7 @@ class BucketListTests(BaseCase, TestCase):
         user = User.query.filter_by(email="test2@test.com").first()
         bucketlist = BucketList(name='test_bucketlist3', user_id=user.id)
         check = bucketlist.add_bucketlist()
-        self.assertTrue(check, "Bucket should be added")
+        self.assertTrue(check, "Bucketlist should be added")
         self.assertTrue(
             bucketlist.id,
             "BucketList doesnot contain id so has not been added to the db"
@@ -40,13 +40,13 @@ class BucketListTests(BaseCase, TestCase):
 
     def test_no_repeat_bucketlist_names(self):
         """
-        Method checks that add bucketlist method actually adds a bucketlist
-        to the database
+        Method checks that add bucketlist method does not add bucketlist
+        with repeated names
         """
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist = BucketList(name='test_bucketlist', user_id=user.id)
         check = bucketlist.add_bucketlist()
-        self.assertFalse(check, "Bucket should be added")
+        self.assertFalse(check, "Bucketlist should not be added")
         self.assertFalse(
             bucketlist.id,
             "BucketList contains id so has been added to the db"
