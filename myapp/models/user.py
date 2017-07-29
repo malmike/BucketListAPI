@@ -36,12 +36,12 @@ class User(BaseModel):
 
 
     @staticmethod
-    def __user_email_exists(email):
+    def __item_exists(value):
         """
         Method is used to verify that a user email exists in
         the database
         """
-        return True if User.query.filter_by(email=email).first() else False
+        return True if User.query.filter_by(email=value).first() else False
 
 
     def verify_password(self, password):
@@ -56,7 +56,7 @@ class User(BaseModel):
         """
         Method is used to add a user to the database
         """
-        if not self.__user_email_exists(self.email):
+        if not self.__item_exists(self.email):
             self.add_data_set()
             return True
         return False
@@ -66,7 +66,7 @@ class User(BaseModel):
         """
         Method is used to delete an existing user from the database
         """
-        if self.__user_email_exists(self.email):
+        if self.__item_exists(self.email):
             self.delete_data_set()
             return True
         return False
