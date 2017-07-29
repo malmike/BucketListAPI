@@ -6,6 +6,7 @@ from datetime import datetime
 from datetime import date
 
 from tests.base_case import BaseCase
+from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
 
 
@@ -23,3 +24,19 @@ class BucketListItemTests(BaseCase, TestCase):
         self.assertTrue(isinstance(item.created, datetime))
         self.assertTrue(isinstance(item.modified, datetime))
         self.assertTrue(isinstance(item.finished_by, date))
+
+
+    def test_add_item(self):
+        """
+        Method checks that add bucketlist item method actually adds a bucketlist
+        item to the database
+        """
+        bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
+        item = BucketListItem(name='test_item3', bucketlist_id=bucketlist.id)
+        check = item.add_bucketlist_item()
+        self.assertTrue(check, "Bucketlist item should be added")
+        self.assertTrue(
+            item.id,
+            "BucketList Item doesnot contain id so has not been added to the db"
+        )
+
