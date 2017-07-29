@@ -3,7 +3,6 @@ Script contains the base model from which other models will inherit
 """
 from datetime import datetime
 import pytz
-import abc
 
 from myapp import db
 
@@ -43,5 +42,5 @@ class BaseModel(db.Model):
 
     __isabstractmethod__=True
     @staticmethod
-    def __item_exists(value):
+    def __item_exists():
         return
