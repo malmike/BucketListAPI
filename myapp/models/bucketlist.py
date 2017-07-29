@@ -7,10 +7,10 @@ import pytz
 
 class BucketList(db.Model):
     """
-    Class used as a representation of the user model
+    Class used as a representation of the bucketlist model
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), index=True, nullable=False)
     created = db.Column(
         db.DateTime,
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
