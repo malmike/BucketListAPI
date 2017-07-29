@@ -39,3 +39,8 @@ class BaseModel(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+
+    __isabstractmethod__ = True
+    @staticmethod
+    def __item_exists():
+        pass

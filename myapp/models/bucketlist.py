@@ -19,32 +19,34 @@ class BucketList(BaseModel):
 
 
     @staticmethod
-    def __bucketlist_exists(name):
+    def __item_exists(value):
         """
         Method is used to verify that a bucketlist name exists in
         the database
         """
-        return True if BucketList.query.filter_by(name=name).first() else False
+        if BucketList.query.filter_by(name=value).first():
+            return True
+        return False
 
 
     def add_bucketlist(self):
         """
         Method is used to add a bucketlist to the database
         """
-        if not self.__bucketlist_exists(self.name):
-            self.add_data_set()
-            return True
-        return False
+        if self.__item_exists(self.name):
+            return False
+        self.add_data_set()
+        return True
 
 
     def delete_bucketlist(self):
         """
         Method is used to add a bucketlist to the database
         """
-        if self.__bucketlist_exists(self.name):
-            self.delete_data_set()
-            return True
-        return False
+        if not self.__item_exists(self.name):
+            return False
+        self.delete_data_set()
+        return True
 
 
     def __repr__(self):
