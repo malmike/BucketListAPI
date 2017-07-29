@@ -44,3 +44,18 @@ class BucketListItemTests(BaseCase, TestCase):
             "BucketList Item doesnot contain id so has not been added to the db"
         )
 
+    def test_delete_bucketlist_item(self):
+        """
+        Method checks that a bucketlist item can be deleted from the database
+        """
+        #retrieve a test bucketlist from the database
+        item = BucketListItem.query.filter_by(id=1).first()
+        self.assertTrue(item)
+
+        #delete the bucketlist from the database
+        item.delete_bucketlist_item()
+        verify_item = BucketListItem.query.filter_by(id=1).first()
+        self.assertFalse(
+            verify_item,
+            "BucketList item that is deleted should not exist in the database"
+        )
