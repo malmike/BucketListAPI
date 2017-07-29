@@ -31,3 +31,12 @@ class BucketList(db.Model):
         return True if BucketList.query.filter_by(name=name).first() else False
 
 
+    def add_bucketlist(self):
+        """
+        Method is used to add a user to the database
+        """
+        if not self.__bucketlist_exists(self.name):
+            db.session.add(self)
+            db.session.commit()
+            return True
+        return False
