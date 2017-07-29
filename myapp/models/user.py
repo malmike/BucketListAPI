@@ -2,13 +2,13 @@
 Script contains the model for a user
 """
 from myapp import db, bcrypt, app
+from myapp.models.base_model import BaseModel
 from myapp.models.bucketlist import BucketList
 
-class User(db.Model):
+class User(BaseModel):
     """
     Class used as a representation of the user model
     """
-    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(50), index=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
@@ -56,8 +56,7 @@ class User(db.Model):
         Method is used to add a user to the database
         """
         if not self.__user_email_exists(self.email):
-            db.session.add(self)
-            db.session.commit()
+            self.add_data_set()
             return True
         return False
 
@@ -67,8 +66,7 @@ class User(db.Model):
         Method is used to delete an existing user from the database
         """
         if self.__user_email_exists(self.email):
-            db.session.delete(self)
-            db.session.commit()
+            self.delete_data_set()
             return True
         return False
 
