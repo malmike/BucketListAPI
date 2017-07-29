@@ -35,7 +35,7 @@ class BucketList(db.Model):
 
     def add_bucketlist(self):
         """
-        Method is used to add a user to the database
+        Method is used to add a bucketlist to the database
         """
         if not self.__bucketlist_exists(self.name):
             db.session.add(self)
@@ -46,7 +46,7 @@ class BucketList(db.Model):
 
     def delete_bucketlist(self):
         """
-        Method is used to add a user to the database
+        Method is used to add a bucketlist to the database
         """
         if self.__bucketlist_exists(self.name):
             db.session.delete(self)
