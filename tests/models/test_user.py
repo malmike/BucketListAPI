@@ -35,9 +35,8 @@ class UserTests(BaseCase, TestCase):
         Method that checks that the password is for the specific user
         """
         user = User.query.filter_by(email="test@test.com").first()
-        check = user.verify_password('test')
         self.assertTrue(
-            check,
+            user.verify_password('test'),
             'Password, matches email so it should return true'
         )
 
@@ -47,9 +46,8 @@ class UserTests(BaseCase, TestCase):
         Method that checks that the password is for the specific user
         """
         user = User.query.filter_by(email="test@test.com").first()
-        check = user.verify_password('testing')
         self.assertFalse(
-            check,
+            user.verify_password('testing'),
             "Password doesnot match email so it should return false"
         )
 
