@@ -17,3 +17,5 @@ def create_app(config_module):
     app.config.from_object(config_module)
     db.init_app(app)
     return app
+
+ 

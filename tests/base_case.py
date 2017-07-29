@@ -105,5 +105,3 @@ class BaseCase(TestCase):
         """
         db.session.remove()
         db.drop_all()
-
-
