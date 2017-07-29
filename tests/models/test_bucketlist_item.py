@@ -32,7 +32,11 @@ class BucketListItemTests(BaseCase, TestCase):
         item to the database
         """
         bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
-        item = BucketListItem(name='test_item3', bucketlist_id=bucketlist.id)
+        item = BucketListItem(
+            name='test_item3',
+            bucketlist_id=bucketlist.id,
+            finished_by=date(2020, 9, 22)
+        )
         check = item.add_bucketlist_item()
         self.assertTrue(check, "Bucketlist item should be added")
         self.assertTrue(
