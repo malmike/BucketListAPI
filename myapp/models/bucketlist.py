@@ -5,24 +5,15 @@ from datetime import datetime
 import pytz
 
 from myapp import db
+from myapp.models.base_model import BaseModel
 from myapp.models.bucketlist_item import BucketListItem
 
 
-class BucketList(db.Model):
+class BucketList(BaseModel):
     """
     Class used as a representation of the bucketlist model
     """
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), index=True, nullable=False)
-    created = db.Column(
-        db.DateTime,
-        default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
-    )
-    modified = db.Column(
-        db.DateTime,
-        default=datetime.now(tz=pytz.timezone('Africa/Kampala')),
-        onupdate=datetime.now(tz=pytz.timezone('Africa/Kampala'))
-    )
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
     bucketlist_item = db.relationship(
@@ -43,8 +34,7 @@ class BucketList(db.Model):
         Method is used to add a bucketlist to the database
         """
         if not self.__bucketlist_exists(self.name):
-            db.session.add(self)
-            db.session.commit()
+            self.add_data_set()
             return True
         return False
 
@@ -54,8 +44,7 @@ class BucketList(db.Model):
         Method is used to add a bucketlist to the database
         """
         if self.__bucketlist_exists(self.name):
-            db.session.delete(self)
-            db.session.commit()
+            self.delete_data_set()
             return True
         return False
 
