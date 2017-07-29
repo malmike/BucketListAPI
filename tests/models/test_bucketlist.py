@@ -4,6 +4,7 @@ Contains tests for the bucketlist model
 from unittest import TestCase
 from tests.base_case import BaseCase
 from myapp.models.bucketlist import BucketList
+from datetime import datetime
 
 class BucketListTests(BaseCase, TestCase):
     """
@@ -16,5 +17,5 @@ class BucketListTests(BaseCase, TestCase):
         bucketlist = BucketList.query.filter_by(id=1).first()
         self.assertEqual(bucketlist.name, "test_bucketlist", "Name not added")
         self.assertEqual(bucketlist.user_id, 1, "User Id not added")
-        self.assertTrue(bucketlist.created)
-        self.assertTrue(bucketlist.modified)
+        self.assertTrue(isinstance(bucketlist.created, datetime))
+        self.assertTrue(isinstance(bucketlist.modified, datetime))
