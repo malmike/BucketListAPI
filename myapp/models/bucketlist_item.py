@@ -24,6 +24,17 @@ class BucketListItem(db.Model):
     )
     finished_by = db.Column(
         db.Date,
-        nullable=False
+        default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucket_list.id'), nullable=False)
+
+
+
+    def add_bucketlist_item(self):
+        """
+        Method is used to add a bucketlist item to the database
+        """
+        db.session.add(self)
+        db.session.commit()
+        return True
+
