@@ -2,16 +2,17 @@
 Contains tests for the bucketlist model
 """
 from unittest import TestCase
+from datetime import datetime
+
 from tests.base_case import BaseCase
 from myapp.models.bucketlist import BucketList
 from myapp.models.user import User
-from datetime import datetime
 
 class BucketListTests(BaseCase, TestCase):
     """
     Class contains tests for the user model
     """
-    def test_bucketlist_is_inserted_in_db(self):
+    def test_bucketlist_inserted_in_db(self):
         """
         Method checks that a user is added to the data
         """
