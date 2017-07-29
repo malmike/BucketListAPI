@@ -106,4 +106,3 @@ class UserTests(BaseCase, TestCase):
         """
         user = User.query.filter_by(email="test@test.com").first()
         self.assertTrue(isinstance(user.bucketlist, list))
-
