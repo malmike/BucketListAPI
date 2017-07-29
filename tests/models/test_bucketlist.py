@@ -37,7 +37,7 @@ class BucketListTests(BaseCase, TestCase):
         )
 
 
-    def test_bucketlist_no_repeat_names(self):
+    def test_no_repeat_bucketlist_names(self):
         """
         Method checks that add bucketlist method actually adds a bucketlist
         to the database
