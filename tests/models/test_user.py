@@ -43,7 +43,7 @@ class UserTests(BaseCase, TestCase):
 
     def test_wrong_password_false(self):
         """
-        Method that checks that the password is for the specific user
+        Method checks that a wrong password returns false
         """
         user = User.query.filter_by(email="test@test.com").first()
         self.assertFalse(
