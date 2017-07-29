@@ -25,6 +25,7 @@ class BaseCase(TestCase):
         """
         return create_app(ENVIRONMENTS['testing'])
 
+
     def setUp(self):
         """
         Sets up the default configurations, and in this case creates
@@ -49,18 +50,21 @@ class BaseCase(TestCase):
         self.add_test_bucketlist_items()
 
 
-    def add_test_users(self):
+    @staticmethod
+    def add_test_users():
         """
         Method adds users to the database for testing
         """
-        user = User(email='test@test.com', password='test')
-        user2 = User(email='test2@test.com', password='test')
+        pwd = "test"
+        user = User(email='test@test.com', password=pwd)
+        user2 = User(email='test2@test.com', password=pwd)
         db.session.add(user)
         db.session.add(user2)
         db.session.commit()
 
 
-    def add_test_bucketlists(self):
+    @staticmethod
+    def add_test_bucketlists():
         """
         Method adds bucketlists to the database for testing
         """
@@ -72,7 +76,8 @@ class BaseCase(TestCase):
         db.session.commit()
 
 
-    def add_test_bucketlist_items(self):
+    @staticmethod
+    def add_test_bucketlist_items():
         """
         Method adds bucketlists items to the database for testing
         """
