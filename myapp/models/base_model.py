@@ -40,7 +40,7 @@ class BaseModel(db.Model):
         db.session.commit()
 
 
-    __isabstractmethod__=True
+    __isabstractmethod__ = True
     @staticmethod
     def __item_exists():
         pass
