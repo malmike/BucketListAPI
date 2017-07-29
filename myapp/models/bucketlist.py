@@ -18,7 +18,8 @@ class BucketList(BaseModel):
     )
 
 
-    def __bucketlist_exists(self, name):
+    @staticmethod
+    def __bucketlist_exists(name):
         """
         Method is used to verify that a bucketlist name exists in
         the database
