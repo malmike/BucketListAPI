@@ -74,4 +74,3 @@ class User(BaseModel):
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
-
