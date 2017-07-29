@@ -4,7 +4,6 @@ configurations of the tests. It creates the flask test
 environment in which the tests can run
 """
 from flask_testing import TestCase
-from sqlalchemy import inspect
 from datetime import date
 
 from instance import ENVIRONMENTS
@@ -19,7 +18,8 @@ class BaseCase(TestCase):
     This class is used to generate the default configurations for
     all the test file
     """
-    def create_app(self):
+    @staticmethod
+    def create_app():
         """
         Creates a flask instance for testing
         """
@@ -96,8 +96,8 @@ class BaseCase(TestCase):
         db.session.add(item2)
         db.session.commit()
 
-
-    def tearDown(self):
+    @staticmethod
+    def tearDown():
         """
         Removes the default configurations, and in this case deletes the
         database data and sessions in sqlalchemy after each test
