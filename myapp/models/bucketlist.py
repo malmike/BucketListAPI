@@ -40,3 +40,17 @@ class BucketList(db.Model):
             db.session.commit()
             return True
         return False
+
+
+    def delete_bucketlist(self):
+        """
+        Method is used to add a user to the database
+        """
+        if self.__bucketlist_exists(self.name):
+            db.session.delete(self)
+            db.session.commit()
+            return True
+        return False
+
+
+
