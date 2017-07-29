@@ -5,23 +5,14 @@ from datetime import datetime
 import pytz
 
 from myapp import db
+from myapp.models.base_model import BaseModel
 
 
-class BucketListItem(db.Model):
+class BucketListItem(BaseModel):
     """
     Class used as a representation of the bucketlist item model
     """
-    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
-    created = db.Column(
-        db.DateTime,
-        default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
-    )
-    modified = db.Column(
-        db.DateTime,
-        default=datetime.now(tz=pytz.timezone('Africa/Kampala')),
-        onupdate=datetime.now(tz=pytz.timezone('Africa/Kampala'))
-    )
     finished_by = db.Column(
         db.Date,
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
@@ -33,8 +24,7 @@ class BucketListItem(db.Model):
         """
         Method is used to add a bucketlist item to the database
         """
-        db.session.add(self)
-        db.session.commit()
+        self.add_data_set()
         return True
 
 
@@ -42,7 +32,7 @@ class BucketListItem(db.Model):
         """
         Method is used to add a bucketlist item to the database
         """
-        db.session.delete(self)
+        self.delete_data_set()
         db.session.commit()
         return True
-    
+
