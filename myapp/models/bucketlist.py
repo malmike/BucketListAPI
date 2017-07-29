@@ -1,9 +1,6 @@
 """
 Script contains the model for a bucketlist
 """
-from datetime import datetime
-import pytz
-
 from myapp import db
 from myapp.models.base_model import BaseModel
 from myapp.models.bucketlist_item import BucketListItem
