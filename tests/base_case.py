@@ -55,9 +55,9 @@ class BaseCase(TestCase):
         """
         Method adds users to the database for testing
         """
-        pwd = "test"
-        user = User(email='test@test.com', password=pwd)
-        user2 = User(email='test2@test.com', password=pwd)
+        _pword = "test"
+        user = User(email='test@test.com', password=_pword)
+        user2 = User(email='test2@test.com', password=_pword)
         db.session.add(user)
         db.session.add(user2)
         db.session.commit()

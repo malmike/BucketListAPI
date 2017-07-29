@@ -57,8 +57,8 @@ class UserTests(BaseCase, TestCase):
         Method checks that add user method actually adds a user
         to the database
         """
-        pwd = "test"
-        user = User(email='test@adduser.com', password=pwd)
+        _pword = "test"
+        user = User(email='test@adduser.com', password=_pword)
         check = user.add_user()
         self.assertTrue(check, "User should be added")
         self.assertTrue(
@@ -72,8 +72,8 @@ class UserTests(BaseCase, TestCase):
         Method checks that add user method actually adds a user
         to the database
         """
-        pwd = "test"
-        user = User(email='test@test.com', password=pwd)
+        _pword = "test"
+        user = User(email='test@test.com', password=_pword)
         check = user.add_user()
         self.assertFalse(check, "User should already exist")
         self.assertFalse(
