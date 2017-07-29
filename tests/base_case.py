@@ -96,6 +96,7 @@ class BaseCase(TestCase):
         db.session.add(item2)
         db.session.commit()
 
+
     @staticmethod
     def tearDown():
         """
