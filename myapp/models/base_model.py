@@ -43,4 +43,4 @@ class BaseModel(db.Model):
     __isabstractmethod__=True
     @staticmethod
     def __item_exists():
-        return
+        pass
