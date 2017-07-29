@@ -30,7 +30,7 @@ class UserTests(BaseCase, TestCase):
         self.assertEqual(user.password, 'Password is only writable')
 
 
-    def test_verify_password_true(self):
+    def test_verify_password(self):
         """
         Method that checks that the password is for the specific user
         """
@@ -41,7 +41,7 @@ class UserTests(BaseCase, TestCase):
         )
 
 
-    def test_verify_password_false(self):
+    def test_wrong_password_false(self):
         """
         Method that checks that the password is for the specific user
         """
