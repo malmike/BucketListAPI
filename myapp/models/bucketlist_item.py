@@ -12,7 +12,7 @@ class BucketListItem(db.Model):
     Class used as a representation of the bucketlist item model
     """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), index=True, nullable=False)
+    name = db.Column(db.Text, nullable=False)
     created = db.Column(
         db.DateTime,
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
