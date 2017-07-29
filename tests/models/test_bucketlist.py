@@ -62,7 +62,7 @@ class BucketListTests(BaseCase, TestCase):
 
         #delete the bucketlist from the database
         bucketlist.delete_bucketlist()
-        verify_bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
+        verify_bucketlist = BucketList.query.filter_by(name="test_bucketlist2").first()
         self.assertFalse(
             verify_bucketlist,
             "BucketList that is deleted should not exist in the database"
