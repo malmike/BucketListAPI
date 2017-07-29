@@ -11,7 +11,8 @@ class Config(object):
     DEBUG = False
     TESTING = False
     BCRYPT_LOG_ROUNDS = 13
-    SECRET = os.getenv('SECRET') or 'KJI38US783KJW92MOYHSYE4837HNFYNE8347SH873UD384UFYHE'
+    __secret_key = 'uMhwMM2q9L2Cg6kgTv2PFz7AbAUOsmMHuZCcwO0A7j6AdtzHuxAf9ctIUBZ4T0ea'
+    SECRET_KEY = os.getenv('SECRET_KEY') or __secret_key
     SQLALCHEMY_DATABASE_URI = "postgresql://localhost/bucketlist_api_dev"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
