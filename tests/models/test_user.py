@@ -97,3 +97,11 @@ class UserTests(BaseCase, TestCase):
             "User that is deleted should not exist in the database"
         )
 
+
+    def test_bucketlist_list(self):
+        """
+        Method tests that the bucket list relation in the user model
+        returns a list of bucketlists specific to that user
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        self.assertTrue(isinstance(user.bucketlist, list))
