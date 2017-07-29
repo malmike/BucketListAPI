@@ -5,11 +5,13 @@ environment in which the tests can run
 """
 from flask_testing import TestCase
 from sqlalchemy import inspect
+from datetime import date
 
 from instance import ENVIRONMENTS
 from myapp import create_app, db
 from myapp.models.user import User
 from myapp.models.bucketlist import BucketList
+from myapp.models.bucketlist_item import BucketListItem
 
 
 class BaseCase(TestCase):
@@ -44,6 +46,7 @@ class BaseCase(TestCase):
         """
         self.add_test_users()
         self.add_test_bucketlists()
+        self.add_test_bucketlist_items()
 
 
     def add_test_users(self):
@@ -66,6 +69,26 @@ class BaseCase(TestCase):
         bucketlist2 = BucketList(user_id=user.id, name='test_bucketlist2')
         db.session.add(bucketlist)
         db.session.add(bucketlist2)
+        db.session.commit()
+
+
+    def add_test_bucketlist_items(self):
+        """
+        Method adds bucketlists items to the database for testing
+        """
+        bucketlist = BucketList.query.filter_by(name='test_bucketlist').first()
+        item = BucketListItem(
+            finished_by=date(2020, 8, 22),
+            bucketlist_id=bucketlist.id,
+            name='test_item'
+        )
+        item2 = BucketListItem(
+            finished_by=date(2020, 9, 22),
+            bucketlist_id=bucketlist.id,
+            name='test_item2'
+        )
+        db.session.add(item)
+        db.session.add(item2)
         db.session.commit()
 
 
