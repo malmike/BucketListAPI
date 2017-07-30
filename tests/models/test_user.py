@@ -149,6 +149,16 @@ class UserTests(BaseCase, TestCase):
         )
 
 
+    def test_token_distinct(self):
+        """
+        Tests that a token is distinct i.e can not generate the
+        same token after token expiry
+        """
+        token1 = self.create_token(duration=0.5, sleep_time=1)['token']
+        token2 = self.create_token(duration=0.5)['token']
+        self.assertNotEqual(token1, token2)
+
+
     def create_token(self, duration=300, sleep_time=0):
         """
         Method is used to call the generate_authentication_token
