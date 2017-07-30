@@ -143,7 +143,8 @@ class UserTests(BaseCase, TestCase):
         authentication token
         """
         token_values = self.create_token()
-        token = token_values['token']+'a'
+        a = 'a'.encode('utf-8')
+        token = token_values['token'] + a
         self.assertFalse(
             token_values['user'].verify_authentication_token(token)
         )
