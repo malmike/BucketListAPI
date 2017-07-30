@@ -168,7 +168,3 @@ class UserTests(BaseCase, TestCase):
         token = user.generate_authentication_token(duration=duration)
         sleep(sleep_time)
         return {"user": user, "token":token}
-
-
-
-
