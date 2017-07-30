@@ -1,6 +1,7 @@
 """
 Script contains the model for a user
 """
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from myapp import db, bcrypt, app
 from myapp.models.base_model import BaseModel
 from myapp.models.bucketlist import BucketList
@@ -70,6 +71,13 @@ class User(BaseModel):
             return True
         return False
 
+
+    def generate_authentication_token(self, duration=300):
+        """
+        Method for generating a JWT authentication token
+        """
+        serializer = Serializer(app.config['SECRET_KEY'], expires_in=int(duration))
+        return serializer.dumps({"id":self.id})
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
