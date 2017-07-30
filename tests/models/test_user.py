@@ -109,16 +109,6 @@ class UserTests(BaseCase, TestCase):
         self.assertTrue(isinstance(user.bucketlist, list))
 
 
-    def test_decode_authentication_token(self):
-        """
-        Tests that the token created can be decoded
-        """
-        user = User.query.filter_by(email="test2@test.com").first()
-        token = user.generate_authentication_token()
-        self.assertTrue(isinstance(token, bytes))
-        self.assertTrue(user.verify_authentication_token(token))
-
-
     def test_authentication_token_expiry(self):
         """
         Should expect false when the token expires
@@ -149,6 +139,15 @@ class UserTests(BaseCase, TestCase):
         token = self.create_token()['token']
         self.assertTrue(isinstance(token, bytes))
 
+
+    def test_decode_authentication_token(self):
+        """
+        Tests that the token created can be decoded
+        """
+        token_values = self.create_token()
+        self.assertTrue(
+            token_values['user'].verify_authentication_token(token_values['token'])
+        )
 
 
     def create_token(self, duration=300, sleep_time=0):
