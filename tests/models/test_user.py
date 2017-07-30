@@ -133,9 +133,9 @@ class UserTests(BaseCase, TestCase):
         Should expect false when the token expires
         """
         user = User.query.filter_by(email="test2@test.com").first()
-        token = user.generate_authentication_token(duration=0.1)
+        token = user.generate_authentication_token(duration=0.5)
         self.assertTrue(isinstance(token, bytes))
-        sleep(0.5)
+        sleep(1)
         self.assertFalse(user.verify_authentication_token(token))
 
 
@@ -149,5 +149,18 @@ class UserTests(BaseCase, TestCase):
         token = token+'a'
         self.assertTrue(isinstance(token, bytes))
         self.assertFalse(user.verify_authentication_token(token))
+
+
+    def create_token(self, duration=300, sleep_time=0):
+        """
+        Method is used to call the generate_authentication_token
+        and returns a token
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        token = user.generate_authentication_token(duration=duration)
+        sleep(sleep_time)
+        return {"user": user, "token":token}
+
+
 
 
