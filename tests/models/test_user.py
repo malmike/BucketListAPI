@@ -132,8 +132,9 @@ class UserTests(BaseCase, TestCase):
         Should expect false when the token expires
         """
         token_values = self.create_token(duration=0.5, sleep_time=1)
-        self.assertFalse(
-            token_values['user'].verify_authentication_token(token_values['token'])
+        self.assertEqual(
+            token_values['user'].verify_authentication_token(token_values['token']),
+            'TokenExpired'
         )
 
 
@@ -145,8 +146,9 @@ class UserTests(BaseCase, TestCase):
         token_values = self.create_token()
         a = 'a'.encode('utf-8')
         token = token_values['token'] + a
-        self.assertFalse(
-            token_values['user'].verify_authentication_token(token)
+        self.assertEqual(
+            token_values['user'].verify_authentication_token(token),
+            'TokenInvalid'
         )
 
 
