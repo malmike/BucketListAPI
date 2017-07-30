@@ -2,6 +2,7 @@
 Contains tests for the user model
 """
 from unittest import TestCase
+from time import sleep
 
 from tests.base_case import BaseCase
 from myapp.models.user import User
@@ -115,5 +116,29 @@ class UserTests(BaseCase, TestCase):
         user = User.query.filter_by(email="test2@test.com").first()
         token = user.generate_authentication_token()
         self.assertTrue(isinstance(token, bytes))
+
+
+    def test_decode_authentication_token(self):
+        """
+        Tests that the token created can be decoded
+        """
+        user = User.query.filter_by(email="test2@test.com").first()
+        token = user.generate_authentication_token()
+        self.assertTrue(isinstance(token, bytes))
+        self.assertTrue(user.verify_authentication_token(token))
+
+
+    def test_authentication_token_expiry(self):
+        """
+        Should expect false when the token expires
+        """
+        user = User.query.filter_by(email="test2@test.com").first()
+        token = user.generate_authentication_token(duration=0.1)
+        self.assertTrue(isinstance(token, bytes))
+        sleep(0.5)
+        self.assertFalse(user.verify_authentication_token(token))
+
+
+    
 
 
