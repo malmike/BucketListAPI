@@ -32,7 +32,7 @@ class BaseCase(TestCase):
         the database to be used
         """
         self.app = self.create_app()
-        self.client = self.app.test_client
+        self.client = self.app.test_client()
         with self.app.app_context():
             db.session.close()
             db.drop_all()
