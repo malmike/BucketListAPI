@@ -139,6 +139,15 @@ class UserTests(BaseCase, TestCase):
         self.assertFalse(user.verify_authentication_token(token))
 
 
-    
+    def test_aulteration_of_authentication_token(self):
+        """
+        Method should expect a false due to aulteration of the
+        authentication token
+        """
+        user = User.query.filter_by(email="test2@test.com").first()
+        token = user.generate_authentication_token(duration=0.5)
+        token = token+'a'
+        self.assertTrue(isinstance(token, bytes))
+        self.assertFalse(user.verify_authentication_token(token))
 
 
