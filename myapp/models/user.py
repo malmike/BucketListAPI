@@ -1,7 +1,10 @@
 """
 Script contains the model for a user
 """
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer as Serializer,
+    BadSignature, SignatureExpired
+)
 from myapp import db, bcrypt, app
 from myapp.models.base_model import BaseModel
 from myapp.models.bucketlist import BucketList
@@ -78,6 +81,22 @@ class User(BaseModel):
         """
         serializer = Serializer(app.config['SECRET_KEY'], expires_in=int(duration))
         return serializer.dumps({"id":self.id})
+
+
+    def verify_authentication_token(self, token):
+        """
+        Method is used to verify authentication token
+        """
+        serializer = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = serializer.loads(token)
+        except SignatureExpired:
+            return False
+        except BadSignature:
+            return False
+        return True if data['id'] == self.id else False
+
+
 
     def __repr__(self):
         return '<UserEmail %r>' % self.email
