@@ -117,7 +117,7 @@ class UserTests(BaseCase, TestCase):
         self.assertTrue(isinstance(token, bytes))
 
 
-    def test_decode_authentication_token(self):
+    def test_decode_token(self):
         """
         Tests that the token created can be decoded
         """
@@ -127,7 +127,7 @@ class UserTests(BaseCase, TestCase):
         )
 
 
-    def test_authentication_token_expiry(self):
+    def test_token_expiration(self):
         """
         Should expect false when the token expires
         """
@@ -137,7 +137,7 @@ class UserTests(BaseCase, TestCase):
         )
 
 
-    def test_aulteration_of_authentication_token(self):
+    def test_token_aulteration(self):
         """
         Method should expect a false due to aulteration of the
         authentication token
