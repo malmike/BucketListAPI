@@ -106,3 +106,14 @@ class UserTests(BaseCase, TestCase):
         """
         user = User.query.filter_by(email="test@test.com").first()
         self.assertTrue(isinstance(user.bucketlist, list))
+
+
+    def test_token_generation(self):
+        """
+        Method tests that the generate token method returns a token
+        """
+        user = User.query.filter_by(email="test2@test.com").first()
+        token = user.generate_authentication_token()
+        self.assertTrue(isinstance(token, bytes))
+
+
