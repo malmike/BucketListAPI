@@ -11,4 +11,8 @@ class UserViewTests(BaseCase, TestCase):
     Class contains tests for the user views that constitute
     those of user registration and user authentication
     """
-    pass
+
+    def test_user_registration(self):
+        """
+        Contains test for user registration method
+        """
