@@ -91,9 +91,9 @@ class User(BaseModel):
         try:
             data = serializer.loads(token)
         except SignatureExpired:
-            return False
+            return 'TokenExpired'
         except BadSignature:
-            return False
+            return 'TokenInvalid'
         return True if data['id'] == self.id else False
 
 
