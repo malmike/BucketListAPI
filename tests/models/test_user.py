@@ -109,17 +109,6 @@ class UserTests(BaseCase, TestCase):
         self.assertTrue(isinstance(user.bucketlist, list))
 
 
-    def test_authentication_token_expiry(self):
-        """
-        Should expect false when the token expires
-        """
-        user = User.query.filter_by(email="test2@test.com").first()
-        token = user.generate_authentication_token(duration=0.5)
-        self.assertTrue(isinstance(token, bytes))
-        sleep(1)
-        self.assertFalse(user.verify_authentication_token(token))
-
-
     def test_aulteration_of_authentication_token(self):
         """
         Method should expect a false due to aulteration of the
@@ -146,6 +135,16 @@ class UserTests(BaseCase, TestCase):
         """
         token_values = self.create_token()
         self.assertTrue(
+            token_values['user'].verify_authentication_token(token_values['token'])
+        )
+
+
+    def test_authentication_token_expiry(self):
+        """
+        Should expect false when the token expires
+        """
+        token_values = self.create_token(duration=0.5, sleep_time=1)
+        self.assertFalse(
             token_values['user'].verify_authentication_token(token_values['token'])
         )
 
