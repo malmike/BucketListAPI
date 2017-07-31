@@ -31,9 +31,7 @@ class BaseCase(TestCase):
         Sets up the default configurations, and in this case creates
         the database to be used
         """
-        self.app = self.create_app()
-        self.client = self.app.test_client()
-        with self.app.app_context():
+        with self.app.test_client():
             db.session.close()
             db.drop_all()
             db.create_all()
