@@ -22,6 +22,18 @@ class AuthEndPointsTests(BaseCase, TestCase):
         self.assertEqual(result['message'], 'Successfully Registered')
 
 
+    def test_user_already_registered(self):
+        """
+        This method tests that registration of the same user fails
+        We will use user 'test@test.com' that was added by the populate_db
+        method in the BaseCase class
+        """
+        response = self.register_user("test@test.com")
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(result['message'], 'User Exists')
+
+
     def register_user(self, email):
         """
         Method is used to carry out user registration for testing
