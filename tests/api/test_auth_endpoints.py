@@ -16,7 +16,8 @@ class AuthEndPointsTests(BaseCase, TestCase):
         """
         This method tests the user registration method
         """
-        response = self.register_user("test@testing.com")
+        path = '/api/v1/auth/register'
+        response = self.register_user(path=path, email="test@testing.com", )
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Successfully Registered')
@@ -28,7 +29,8 @@ class AuthEndPointsTests(BaseCase, TestCase):
         We will use user 'test@test.com' that was added by the populate_db
         method in the BaseCase class
         """
-        response = self.register_user("test@test.com")
+        path = '/api/v1/auth/register'
+        response = self.register_user(path=path, email="test@testing.com", )
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 409)
         self.assertEqual(result['message'], 'User Exists')
@@ -39,20 +41,23 @@ class AuthEndPointsTests(BaseCase, TestCase):
         This method tests that an Invalid Email Address is not
         registered
         """
-        response = self.register_user("testtest.com")
+        path = '/api/v1/auth/register'
+        response = self.register_user(path=path, email="test@testing.com", )
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], 'Invalid Email Address')
 
 
-    def register_user(self, email):
+    def post_user_data(self, path, email, _pword="test"):
         """
-        Method is used to carry out user registration for testing
+        Method is used to send user data to the api basing on the
+        path passed as an argument
         """
-        _pword = "test"
         return self.client.post(
-            '/api/v1/auth/register',
+            path,
             data=json.dumps({"email": email, "password": _pword}),
             content_type="application/json",
             follow_redirects=True
         )
+
+
