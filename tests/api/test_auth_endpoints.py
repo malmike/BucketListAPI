@@ -17,7 +17,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         This method tests the user registration method
         """
         path = '/api/v1/auth/register'
-        response = self.register_user(path=path, email="test@testing.com", )
+        response = self.post_user_data(path=path, email="test@testing.com")
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Successfully Registered')
@@ -30,7 +30,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         method in the BaseCase class
         """
         path = '/api/v1/auth/register'
-        response = self.register_user(path=path, email="test@testing.com", )
+        response = self.post_user_data(path=path, email="test@testing.com")
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 409)
         self.assertEqual(result['message'], 'User Exists')
@@ -42,7 +42,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         registered
         """
         path = '/api/v1/auth/register'
-        response = self.register_user(path=path, email="test@testing.com", )
+        response = self.post_user_data(path=path, email="test@testing.com")
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], 'Invalid Email Address')
