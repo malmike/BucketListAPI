@@ -2,9 +2,10 @@
 Script contains the base model from which other models will inherit
 """
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 import pytz
 
-from myapp import db
+db = SQLAlchemy()
 
 
 class BaseModel(db.Model):
