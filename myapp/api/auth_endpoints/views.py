@@ -12,7 +12,35 @@ class RegisterUser(Resource):
     """
     Class contains mthods that handle requests for registering a new user
     """
-    
+    def post(self):
+        """
+        Method receives post data used to register a new user
+        """
+        post_data = request.get_json()
+        email = post_data.get('email')
+        password = post_data.get('password')
+
+        if not self.__validate_email(email):
+            return abort(401, 'Invalid Email Address')
+
+        user = User(email=email,password=password)
+
+        try:
+            check = user.add_user()
+            if check:
+                auth_token = user.generate_authentication_token()
+                response = {
+                    'status': 'success',
+                    'message': 'Successfully Registered',
+                    'auth_token': auth_token
+                }
+                return response, 201
+            else:
+                response = {'status': 'fail', 'message': 'User Exists'}
+                return response, 409
+        except Exception as e:
+            return abort(401, message='Error creating your account:{}'.format(e.message))
+
 
     @staticmethod
     def __validate_email(email):
