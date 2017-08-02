@@ -7,7 +7,7 @@ from flask_testing import TestCase
 from datetime import date
 
 from instance import ENVIRONMENTS
-from myapp import create_app, db
+from manage import APP, db
 from myapp.models.user import User
 from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
@@ -23,7 +23,7 @@ class BaseCase(TestCase):
         """
         Creates a flask instance for testing
         """
-        return create_app(ENVIRONMENTS['testing'])
+        return APP
 
 
     def setUp(self):
