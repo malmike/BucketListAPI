@@ -34,6 +34,17 @@ class AuthEndPointsTests(BaseCase, TestCase):
         self.assertEqual(result['message'], 'User Exists')
 
 
+    def test_invalid_email(self):
+        """
+        This method tests that an Invalid Email Address is not
+        registered
+        """
+        response = self.register_user("testtest.com")
+        result = json.loads(response.data)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(result['message'], 'Invalid Email Address')
+
+
     def register_user(self, email):
         """
         Method is used to carry out user registration for testing
