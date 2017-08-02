@@ -80,7 +80,7 @@ class User(BaseModel):
         return False
 
 
-    def generate_authentication_token(self, duration=300):
+    def generate_authentication_token(self, duration=Config.AUTH_TOKEN_DURATION):
         """
         Method for generating a JWT authentication token
         """
