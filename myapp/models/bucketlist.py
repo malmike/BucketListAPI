@@ -1,9 +1,9 @@
 """
 Script contains the model for a bucketlist
 """
-from myapp import db
-from myapp.models.base_model import BaseModel
-from myapp.models.bucketlist_item import BucketListItem
+
+from .base_model import BaseModel, db
+from .bucketlist_item import BucketListItem
 
 
 class BucketList(BaseModel):
