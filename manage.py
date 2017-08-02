@@ -14,6 +14,11 @@ from myapp import create_app, db
 
 ENV = getenv('BUCKETLIST_ENV') or 'development'
 
+
+if len(argv) > 1 and argv[1] == "testing" or "test_coverage":
+    ENV = "testing"
+
+
 APP = create_app(ENVIRONMENTS.get(ENV))
 COV = Coverage(
     branch=True,
@@ -34,11 +39,9 @@ MANAGER.add_command('db', MigrateCommand)
 @MANAGER.command
 def testing():
     """
-    Calls and runs the tests
+    Calls run_tests method which runs the tests
     """
-    tests = TestLoader().discover('tests', pattern='test*.py')
-    result = TextTestRunner(verbosity = 1).run(tests)
-    if result.wasSuccessful():
+    if run_tests():
         return 0
     return 1
 
@@ -46,12 +49,10 @@ def testing():
 @MANAGER.command
 def test_coverage():
     """
-    Runs tests with coverage
+    Calls run_tests method and runs the tests with coverage
     """
     COV.start()
-    tests = TestLoader().discover('tests', pattern='test*.py')
-    result = TextTestRunner(verbosity = 1).run(tests)
-    if result.wasSuccessful():
+    if run_tests():
         COV.use_cache(True)
         COV.stop()
         COV.save()
@@ -64,6 +65,14 @@ def test_coverage():
         COV.xml_report()
         return 0
     return 1
+
+
+def run_tests():
+    """
+    Method for running the tests
+    """
+    tests = TestLoader().discover('tests', pattern='test*.py')
+    return TextTestRunner(verbosity = 1).run(tests)
 
 
 if __name__ == '__main__':
