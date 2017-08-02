@@ -5,9 +5,14 @@ from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
     BadSignature, SignatureExpired
 )
-from myapp import db, bcrypt, app
-from myapp.models.base_model import BaseModel
-from myapp.models.bucketlist import BucketList
+from flask_bcrypt import Bcrypt
+
+from instance.config import Config
+from .base_model import BaseModel, db
+from .bucketlist import BucketList
+
+
+bcrypt = Bcrypt()
 
 class User(BaseModel):
     """
@@ -35,7 +40,7 @@ class User(BaseModel):
         Method helps set the password property for the class
         """
         self._password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
+            password, Config.BCRYPT_LOG_ROUNDS
         ).decode()
 
 
@@ -79,7 +84,7 @@ class User(BaseModel):
         """
         Method for generating a JWT authentication token
         """
-        serializer = Serializer(app.config['SECRET_KEY'], expires_in=int(duration))
+        serializer = Serializer(Config.SECRET_KEY, expires_in=int(duration))
         return serializer.dumps({"id":self.id})
 
 
@@ -87,7 +92,7 @@ class User(BaseModel):
         """
         Method is used to verify authentication token
         """
-        serializer = Serializer(app.config['SECRET_KEY'])
+        serializer = Serializer(Config.SECRET_KEY)
         try:
             data = serializer.loads(token)
         except SignatureExpired:
