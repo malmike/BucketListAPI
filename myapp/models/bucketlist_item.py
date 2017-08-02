@@ -4,8 +4,7 @@ Script contains the model for a bucketlist items
 from datetime import datetime
 import pytz
 
-from myapp import db
-from myapp.models.base_model import BaseModel
+from .base_model import BaseModel, db
 
 
 class BucketListItem(BaseModel):
