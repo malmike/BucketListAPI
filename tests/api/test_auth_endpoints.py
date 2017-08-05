@@ -84,18 +84,3 @@ class AuthEndPointsTests(BaseCase, TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], 'Failed to authenticate user')
-
-
-    def post_user_data(self, path, email, _pword="test"):
-        """
-        Method is used to send user data to the api basing on the
-        path passed as an argument
-        """
-        return self.client.post(
-            path,
-            data=json.dumps({"email": email, "password": _pword}),
-            content_type="application/json",
-            follow_redirects=True
-        )
-
-

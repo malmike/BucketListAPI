@@ -5,6 +5,7 @@ environment in which the tests can run
 """
 from flask_testing import TestCase
 from datetime import date
+import json
 
 from instance import ENVIRONMENTS
 from manage import APP, db
@@ -93,6 +94,19 @@ class BaseCase(TestCase):
         db.session.add(item)
         db.session.add(item2)
         db.session.commit()
+
+
+    def post_user_data(self, path, email, _pword="test"):
+        """
+        Method is used to send user data to the api basing on the
+        path passed as an argument
+        """
+        return self.client.post(
+            path,
+            data=json.dumps({"email": email, "password": _pword}),
+            content_type="application/json",
+            follow_redirects=True
+        )
 
 
     @staticmethod
