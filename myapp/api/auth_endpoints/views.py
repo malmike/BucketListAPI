@@ -70,6 +70,10 @@ class AuthenticateUser(Resource):
     Handles requests for authentication of a user, based on the user's email
     and password
     """
+    @auth_api.response(201, 'Login Successful')
+    @auth_api.response(401, 'Failed to authenticate user')
+    @auth_api.response(409, 'User Data is invalid or User Exists')
+    @auth_api.doc(model='User', body=USER)
     def post(self):
         """
         Handles post requests for authentication of a user
