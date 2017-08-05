@@ -4,9 +4,10 @@ i.e user registration, user authentication, user verification
 and logout
 """
 from flask_restplus import Namespace, Resource, abort, fields
-from flask import request
+from flask import request, g
 from re import search
 from myapp.models.user import User
+from myapp.utilities.Utilities import validate_email
 
 auth_api = Namespace('auth', description='User authentication and registration')
 
@@ -42,7 +43,7 @@ class RegisterUser(Resource):
         email = post_data.get('email')
         password = post_data.get('password')
 
-        if not User.validate_email(email):
+        if not validate_email(email):
             return abort(409, 'Invalid Email Address')
 
         user = User(email=email, password=password)
@@ -51,6 +52,7 @@ class RegisterUser(Resource):
             check = user.add_user()
             if check:
                 auth_token = user.generate_authentication_token()
+                g.current_user = user
                 response = {
                     'status': 'success',
                     'message': 'Successfully Registered',
@@ -82,24 +84,28 @@ class AuthenticateUser(Resource):
         email = post_data.get('email')
         password = post_data.get('password')
 
-        if not User.validate_email(email):
+        if not validate_email(email):
             return abort(409, 'Invalid Email Address')
 
         user = User.query.filter_by(email=email).first()
-
-        if user and user.verify_password(password):
-            auth_token = user.generate_authentication_token()
+        try:
+            if user and user.verify_password(password):
+                auth_token = user.generate_authentication_token()
+                g.current_user = user
+                response = {
+                    'status': 'success',
+                    'message': 'Login Successful',
+                    'auth_token': auth_token
+                }
+                return response, 201
             response = {
-                'status': 'success',
-                'message': 'Login Successful',
-                'auth_token': auth_token
+                'status': 'fail',
+                'message': 'Failed to authenticate user'
             }
-            return response, 201
-        response = {
-            'status': 'fail',
-            'message': 'Failed to authenticate user'
-        }
-        return response, 401
+            return response, 401
+        except Exception as e:
+            return abort(500, message='Error creating your account:{}'.format(e.message))
+
 
 
 
