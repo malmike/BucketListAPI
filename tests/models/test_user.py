@@ -132,9 +132,8 @@ class UserTests(BaseCase, TestCase):
         Should expect false when the token expires
         """
         token_values = self.create_token(duration=0.5, sleep_time=1)
-        self.assertEqual(
-            token_values['user'].verify_authentication_token(token_values['token']),
-            'TokenExpired'
+        self.assertFalse(
+            token_values['user'].verify_authentication_token(token_values['token'])
         )
 
 
@@ -146,9 +145,8 @@ class UserTests(BaseCase, TestCase):
         token_values = self.create_token()
         a = 'a'.encode('utf-8')
         token = token_values['token'] + a
-        self.assertEqual(
-            token_values['user'].verify_authentication_token(token),
-            'TokenInvalid'
+        self.assertFalse(
+            token_values['user'].verify_authentication_token(token)
         )
 
 
@@ -161,22 +159,6 @@ class UserTests(BaseCase, TestCase):
         token2 = self.create_token(duration=0.5)['token']
         self.assertNotEqual(token1, token2)
 
-
-    def test_valid_email(self):
-        """
-        Tests that when a vaild email is passed, validate_email method
-        returns true
-        """
-        self.assertTrue(User.validate_email('test@test.com'))
-
-
-    def test_invalid_email(self):
-        """
-        Ensures that when one enters an invalid email, validate_email method
-        returns false
-        """
-        self.assertFalse(User.validate_email('testtests.com'))
-        
 
     def create_token(self, duration=300, sleep_time=0):
         """
