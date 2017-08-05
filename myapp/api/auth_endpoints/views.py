@@ -10,11 +10,15 @@ from myapp.models.user import User
 
 auth_api = Namespace('auth', description='User authentication and registration')
 
-user = auth_api.model(
+USER = auth_api.model(
     'User',
     {
         'email':fields.String(required=True, description="User's Email", example="test@test.com"),
-        'password':fields.String(required=True, description="User's Password", example="test_password")
+        'password':fields.String(
+            required=True,
+            description="User's Password",
+            example="test_password"
+        )
     }
 )
 
@@ -24,9 +28,12 @@ class RegisterUser(Resource):
     Class contains mthods that handle requests for registering a new user
     """
     @auth_api.response(201, 'Successful User Registration')
-    @auth_api.response(400, 'Request not understood by the server')
     @auth_api.response(409, 'User Data is invalid or User Exists')
-    @auth_api.doc(model='User', body=user)
+    @auth_api.response(
+        500,
+        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
+    )
+    @auth_api.doc(model='User', body=USER)
     def post(self):
         """
         Method receives post data used to register a new user
@@ -38,7 +45,7 @@ class RegisterUser(Resource):
         if not self.__validate_email(email):
             return abort(409, 'Invalid Email Address')
 
-        user = User(email=email,password=password)
+        user = User(email=email, password=password)
 
         try:
             check = user.add_user()
@@ -54,7 +61,7 @@ class RegisterUser(Resource):
                 response = {'status': 'fail', 'message': 'User Exists'}
                 return response, 409
         except Exception as e:
-            return abort(400, message='Error creating your account:{}'.format(e.message))
+            return abort(500, message='Error creating your account:{}'.format(e.message))
 
 
     @staticmethod
