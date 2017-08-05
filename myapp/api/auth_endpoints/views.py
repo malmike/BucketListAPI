@@ -25,7 +25,7 @@ USER = auth_api.model(
 @auth_api.route('/register', endpoint='registration')
 class RegisterUser(Resource):
     """
-    Class contains mthods that handle requests for registering a new user
+    Handles requests for registering a new user
     """
     @auth_api.response(201, 'Successful User Registration')
     @auth_api.response(409, 'User Data is invalid or User Exists')
@@ -36,13 +36,13 @@ class RegisterUser(Resource):
     @auth_api.doc(model='User', body=USER)
     def post(self):
         """
-        Method receives post data used to register a new user
+        Handles post requests for registration of a new user
         """
         post_data = request.get_json()
         email = post_data.get('email')
         password = post_data.get('password')
 
-        if not self.__validate_email(email):
+        if not User.validate_email(email):
             return abort(409, 'Invalid Email Address')
 
         user = User(email=email, password=password)
@@ -64,12 +64,40 @@ class RegisterUser(Resource):
             return abort(500, message='Error creating your account:{}'.format(e.message))
 
 
-    @staticmethod
-    def __validate_email(email):
+@auth_api.route('/login', endpoint='login')
+class AuthenticateUser(Resource):
+    """
+    Handles requests for authentication of a user, based on the user's email
+    and password
+    """
+    def post(self):
         """
-        Method validates that the email passed is valid
-        regular expression used is got from http://emailregex.com
+        Handles post requests for authentication of a user
         """
-        email_re = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-        return True if search(email_re, email) else False
+        post_data = request.get_json()
+        email = post_data.get('email')
+        password = post_data.get('password')
+
+        if not User.validate_email(email):
+            return abort(409, 'Invalid Email Address')
+
+        user = User.query.filter_by(email=email).first()
+
+        if user and user.verify_password(password):
+            auth_token = user.generate_authentication_token()
+            response = {
+                'status': 'success',
+                'message': 'Login Successful',
+                'auth_token': auth_token
+            }
+            return response, 201
+        response = {
+            'status': 'fail',
+            'message': 'Failed to authenticate user'
+        }
+        return response, 401
+
+
+
+
 
