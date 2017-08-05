@@ -162,6 +162,22 @@ class UserTests(BaseCase, TestCase):
         self.assertNotEqual(token1, token2)
 
 
+    def test_valid_email(self):
+        """
+        Tests that when a vaild email is passed, validate_email method
+        returns true
+        """
+        self.assertTrue(User.validate_email('test@test.com'))
+
+
+    def test_invalid_email(self):
+        """
+        Ensures that when one enters an invalid email, validate_email method
+        returns false
+        """
+        self.assertFalse(User.validate_email('testtests.com'))
+        
+
     def create_token(self, duration=300, sleep_time=0):
         """
         Method is used to call the generate_authentication_token
