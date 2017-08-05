@@ -10,6 +10,7 @@ from flask_bcrypt import Bcrypt
 from instance.config import Config
 from .base_model import BaseModel, db
 from .bucketlist import BucketList
+from re import search
 
 
 bcrypt = Bcrypt()
@@ -101,6 +102,15 @@ class User(BaseModel):
             return 'TokenInvalid'
         return True if data['id'] == self.id else False
 
+
+    @staticmethod
+    def validate_email(email):
+        """
+        Method validates that the email passed is valid
+        regular expression used is got from http://emailregex.com
+        """
+        email_re = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        return True if search(email_re, email) else False
 
 
     def __repr__(self):
