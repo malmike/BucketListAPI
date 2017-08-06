@@ -43,9 +43,8 @@ class BucketListEndPoint(Resource):
         """
         post_data = request.get_json()
         name = post_data.get('name')
-        created_by = post_data.get('created_by')
 
-        bucketlist = BucketList(name=name, user_id=created_by)
+        bucketlist = BucketList(name=name, user_id=g.current_user.id)
 
         try:
             check = bucketlist.add_bucketlist()
