@@ -105,9 +105,3 @@ class AuthenticateUser(Resource):
             return response, 401
         except Exception as e:
             return abort(500, message='Error creating your account:{}'.format(e.message))
-
-
-
-
-
-
