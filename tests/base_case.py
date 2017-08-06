@@ -109,6 +109,18 @@ class BaseCase(TestCase):
         )
 
 
+    def authentication_headers(self, email, password):
+        """
+        Method generates authentication headers for the test user
+        basing on the email and password passed in the arguments
+        """
+        path = '/api/v1/auth/login'
+        response = self.post_user_data(path=path, email=email, _pword=password)
+        result = json.loads(response.data)
+        self.assertTrue(result['auth_token'])
+        return {'x-access-token': result['auth_token']}
+
+
     @staticmethod
     def tearDown():
         """
