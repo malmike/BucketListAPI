@@ -14,8 +14,8 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
     """
     def test_add_bucketlist(self):
         """
-        Method tests that the endpoint meant to add a bucketlist actually
-        adds a bucketlist
+        Method tests that the endpoint meant to add a bucketlist actually adds a bucketlist
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
         email = "test@test.com"
         _pword = "test"
@@ -23,7 +23,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         response = self.add_bucketlist(email, _pword, user.id, 'test_bucketlist_name')
         result = json.loads(response.data)
-        self.assertEqual(response.status, 201)
+        self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucketlist Added')
         new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         self.assertNotEqual(bucketlist_no, new_bucketlist_no)
@@ -32,14 +32,15 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
     def test_fail_repeated_buckelist(self):
         """
         Method tests that there can not be more than one bucketlist added with the
-        same name
+        same name. We will use one of the already existing bucketlist names 'test_bucketlist'
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
-        response = self.add_bucketlist("test@test.com", "test", user.id, 'test_bucketlist_name')
+        response = self.add_bucketlist("test@test.com", "test", user.id, 'test_bucketlist')
         result = json.loads(response.data)
-        self.assertEqual(response.status, 401)
-        self.assertEqual(result['message'], 'Bucketlist Already Exists')
+        self.assertEqual(response.status, '409 CONFLICT')
+        self.assertEqual(result['message'], 'Bucketlist Exists')
         new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         self.assertEqual(bucketlist_no, new_bucketlist_no)
 
