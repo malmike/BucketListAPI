@@ -3,8 +3,8 @@ This is the script for initialising the flask application
 """
 from flask import Flask
 
-from flask_bcrypt import Bcrypt
 from myapp.api.auth_endpoints import auth_blueprint
+from myapp.api.bucketlist_endpoints import bucketlist_blueprint
 from .models.base_model import db
 
 def create_app(config_module):
@@ -18,7 +18,6 @@ def create_app(config_module):
 
     # Register the blue prints
     app.register_blueprint(auth_blueprint, url_prefix='/api/v1')
-
+    app.register_blueprint(bucketlist_blueprint, url_prefix='/api/v1')
     return app
-
 
