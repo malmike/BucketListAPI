@@ -29,6 +29,21 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertNotEqual(bucketlist_no, new_bucketlist_no)
 
 
+    def test_fail_repeated_buckelist(self):
+        """
+        Method tests that there can not be more than one bucketlist added with the
+        same name
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
+        response = self.add_bucketlist("test@test.com", "test", user.id, 'test_bucketlist_name')
+        result = json.loads(response.data)
+        self.assertEqual(response.status, 401)
+        self.assertEqual(result['message'], 'Bucketlist Already Exists')
+        new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
+        self.assertEqual(bucketlist_no, new_bucketlist_no)
+
+
     def add_bucketlist(self, email, password, user_id, buckelist_name):
         """
         Method is used to send request to the api to add a bucketlist for testing
