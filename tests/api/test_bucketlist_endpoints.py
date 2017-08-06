@@ -45,14 +45,14 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertEqual(bucketlist_no, new_bucketlist_no)
 
 
-    def add_bucketlist(self, email, password, user_id, buckelist_name):
+    def add_bucketlist(self, email, password, buckelist_name):
         """
         Method is used to send request to the api to add a bucketlist for testing
         """
         headers = self.authentication_headers(email=email, password=password)
         return self.client.post(
             '/api/v1/bucketlist',
-            data=json.dumps({"name": buckelist_name, "created_by": user_id}),
+            data=json.dumps({"name": buckelist_name}),
             content_type="application/json",
             headers=headers,
             follow_redirects=True
