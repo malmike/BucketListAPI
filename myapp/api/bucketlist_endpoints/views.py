@@ -28,6 +28,7 @@ class BucketListEndPoint(Resource):
     """
     Class contains operations which handle requests specific to a bucketlist
     """
+    @bucketlist_api.header('X-Header', 'x-access-token', required=True)
     @auth.login_required
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
     @bucketlist_api.response(409, 'Bucketlist Exists')
