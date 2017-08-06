@@ -24,6 +24,6 @@ def verify_token(token=None):
     Verifies the token before a restricted application process occurs
     """
     token = request.headers.get('x-access-token') or token
-    if g.current_user.verify_authentication_token(token):
+    if "current_user" in g and g.current_user.verify_authentication_token(token):
         return True
     return False
