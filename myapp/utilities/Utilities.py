@@ -3,7 +3,7 @@ This script contatins utilities for the api i.e. general computations
 for the API like validate email
 """
 from re import search
-from flask import g
+from flask import request, g
 from flask_httpauth import HTTPTokenAuth
 
 auth = HTTPTokenAuth(scheme='Token')
@@ -19,7 +19,11 @@ def validate_email(email):
 
 
 @auth.verify_token
-def verify_token(token):
+def verify_token(token=None):
+    """
+    Verifies the token before a restricted application process occurs
+    """
+    token = request.headers.get('x-access-token') or token
     if g.current_user.verify_authentication_token(token):
         return True
     return False
