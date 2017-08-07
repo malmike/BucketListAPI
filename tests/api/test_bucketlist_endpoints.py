@@ -163,6 +163,20 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(BucketList.query.filter_by(id=1).first())
 
 
+    def test_delete_bucketlist_wrong_id(self):
+        """
+        Tests the endpoint for delete bucketlist return error code 400 when wrong id is passed
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        response = self.delete_bucketlist("test@test.com", 'test', 0)
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(
+            result['message'],
+            'Bucketlist with ID {} not found in the database'.format(0)
+        )
+
+
     def get_bucketlist(self, email, password, bucketlist_id):
         """
         Method is used to get a bucketlist basing on the id passed
