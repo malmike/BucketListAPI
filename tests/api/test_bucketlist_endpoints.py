@@ -145,7 +145,23 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             result['message'],
             'Bucketlist with ID {} not found in the database'.format(0)
         )
-        
+
+
+    def test_delete_bucketlist(self):
+        """
+        Method tests the endpoint for delete bucketlist
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        bucketlist = BucketList.query.filter_by(id=1).first()
+        id = bucketlist.id
+        self.assertEqual(bucketlist.user_id, user.id)
+        response = self.delete_bucketlist("test@test.com", 'test', bucketlist.id)
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(result.get('message'), 'Bucketlist with ID {} deleted'.format(id))
+        self.assertFalse(BucketList.query.filter_by(id=1).first())
+
 
     def get_bucketlist(self, email, password, bucketlist_id):
         """
@@ -169,6 +185,20 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             '/api/v1/bucketlist/{}'.format(bucketlist_id),
             content_type="application/json",
             data=json.dumps(data),
+            headers=headers,
+            follow_redirects=True
+        )
+
+
+    def delete_bucketlist(self, email, password, bucketlist_id):
+        """
+        Method is used to request api to delete bucketlist basing on the id
+        passed
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.delete(
+            '/api/v1/bucketlist/{}'.format(bucketlist_id),
+            content_type="application/json",
             headers=headers,
             follow_redirects=True
         )
