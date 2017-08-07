@@ -60,7 +60,7 @@ class UserTests(BaseCase, TestCase):
         """
         _pword = "test"
         user = User(email='test@adduser.com', password=_pword)
-        check = user.add_user()
+        check = user.save_user()
         self.assertTrue(check, "User should be added")
         self.assertTrue(
             user.id,
@@ -75,7 +75,7 @@ class UserTests(BaseCase, TestCase):
         """
         _pword = "test"
         user = User(email='test@test.com', password=_pword)
-        check = user.add_user()
+        check = user.save_user()
         self.assertFalse(check, "User should already exist")
         self.assertFalse(
             user.id,
@@ -106,7 +106,7 @@ class UserTests(BaseCase, TestCase):
         returns a list of bucketlists specific to that user
         """
         user = User.query.filter_by(email="test@test.com").first()
-        self.assertTrue(isinstance(user.bucketlist, list))
+        self.assertTrue(isinstance(user.bucketlists, list))
 
 
     def test_token_generation(self):
