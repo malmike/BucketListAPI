@@ -86,6 +86,25 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertEqual(result.get('name'), bucketlist.name)
 
 
+    def test_get_bucketlist_wrong_id(self):
+        """
+        Tests the endpoint for getting a bucketlist when the wrong id is passed returns an error
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        bucketlist = BucketList.query.filter_by(id=0).first()
+        self.assertFalse(bucketlist)
+        headers = self.authentication_headers(email="test@test.com", password="test")
+        response = self.client.get(
+            '/api/v1/bucketlist/0',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '400 BAD REQUEST')
+
+
     def add_bucketlist(self, email, password, buckelist_name):
         """
         Method is used to send request to the api to add a bucketlist for testing
