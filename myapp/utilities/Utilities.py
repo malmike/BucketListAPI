@@ -5,6 +5,7 @@ for the API like validate email
 from re import search
 from flask import request, g
 from flask_httpauth import HTTPTokenAuth
+from myapp.models.user import User
 
 auth = HTTPTokenAuth(scheme='Token')
 
@@ -24,6 +25,8 @@ def verify_token(token=None):
     Verifies the token before a restricted application process occurs
     """
     token = request.headers.get('x-access-token') or token
-    if "current_user" in g and g.current_user.verify_authentication_token(token):
+    user_id = User.verify_authentication_token(token)
+    if user_id:
+        g.current_user = User.query.filter_by(id=user_id).first()
         return True
     return False
