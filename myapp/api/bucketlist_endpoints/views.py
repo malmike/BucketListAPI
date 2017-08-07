@@ -3,6 +3,7 @@ This file contains the endpoints for bucketlists
 """
 from flask_restplus import Namespace, Resource, abort, fields
 from flask import request, g
+from sqlalchemy import desc
 from myapp.models.bucketlist import BucketList
 from myapp.utilities.Utilities import auth
 
@@ -21,6 +22,8 @@ BUCKETLIST = bucketlist_api.model(
     }
 )
 
+bucketlist_parser = bucketlist_api.parser()
+bucketlist_parser.add_argument('q', type=str, help='Search term for querying bucketlist', required=False)
 
 @bucketlist_api.route('', endpoint='bucketlist')
 class BucketListEndPoint(Resource):
@@ -65,12 +68,22 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
     @bucketlist_api.response(400, 'User has no single bucketlist')
     @bucketlist_api.marshal_with(BUCKETLIST, as_list=True)
+    @bucketlist_api.expect(bucketlist_parser)
     def get(self):
         """
         Retrieves existing bucketlists for specific user
         """
+        search_term = request.args.get('q') or None
+        if search_term:
+            bucketlists = BucketList.query.filter(
+                    BucketList.name.like('%'+search_term+'%'),
+                    BucketList.user_id==g.current_user.id
+                ).order_by(desc(BucketList.created)).all()
+            return bucketlists, 200
+
         if g.current_user.bucketlists:
             return g.current_user.bucketlists, 200
+
         return abort(400, 'User has no single bucketlist')
 
 
