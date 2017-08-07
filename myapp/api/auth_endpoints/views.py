@@ -52,7 +52,6 @@ class RegisterUser(Resource):
             check = user.add_user()
             if check:
                 auth_token = user.generate_authentication_token()
-                g.current_user = user
                 response = {
                     'status': 'success',
                     'message': 'Successfully Registered',
@@ -91,7 +90,6 @@ class AuthenticateUser(Resource):
         try:
             if user and user.verify_password(password):
                 auth_token = user.generate_authentication_token()
-                g.current_user = user
                 response = {
                     'status': 'success',
                     'message': 'Login Successful',
@@ -104,4 +102,4 @@ class AuthenticateUser(Resource):
             }
             return response, 401
         except Exception as e:
-            return abort(500, message='Error creating your account:{}'.format(e.message))
+            return abort(500, message='Error logging in user:{}'.format(e.message))
