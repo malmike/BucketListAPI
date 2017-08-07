@@ -116,3 +116,22 @@ class IndividualBucketList(Resource):
             bucketlist.save_bucketlist()
             return bucketlist, 200
         abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+
+
+    @bucketlist_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_api.response(200, 'Successfully Deleted Bucketlist')
+    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    def delete(self, bucketlist_id):
+        """
+        Retrieves existing bucketlists for specific user
+        """
+        bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
+        if bucketlist:
+            bucketlist.delete_bucketlist()
+            response = {
+                'status': 'success',
+                'message': 'Bucketlist with ID {} deleted'.format(bucketlist_id)
+            }
+            return response, 200
+        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
