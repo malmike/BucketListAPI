@@ -54,6 +54,28 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertLess(item_no, new_item_no)
 
 
+    def test_put_bucketlist_item(self):
+        """
+        Method tests the end point for updating a bucket list item using put
+        """
+        data = {"name": "bucketlist_item_name", "completed": True}
+        email = "test@test.com"
+        _pword = "test"
+        user = User.query.filter_by(email=email).first()
+        bucketlist = BucketList.query.filter_by(user_id=user.id, name="test_bucketlist").first()
+        item = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
+        self.assertNotEqual(item.name, "bucketlist_item_name")
+        self.assertFalse(item.completed)
+
+        response = self.put_bucketlist_item(email, _pword, bucketlist.id, 1, data)
+        result = json.loads(response.data)
+        item2 = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(item2.name, "bucketlist_item_name")
+        self.assertTrue(item2.completed)
+
+
+
     def add_bucketlist_item(self, email, password, buckelist_id):
         """
         Method is used to send request to the api to add a bucketlist for testing
@@ -67,3 +89,18 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             headers=headers,
             follow_redirects=True
         )
+
+
+    def put_bucketlist_item(self, email, password, bucketlist_id, item_id, data):
+        """
+        Method is used to send request for put for the bucketlist item to the api
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.put(
+            '/api/v1/bucketlist/{}/items/{}'.format(bucketlist_id, item_id),
+            content_type="application/json",
+            data=json.dumps(data),
+            headers=headers,
+            follow_redirects=True
+        )
+
