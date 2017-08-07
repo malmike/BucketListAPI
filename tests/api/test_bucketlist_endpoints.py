@@ -130,6 +130,23 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertNotEqual(result.get('name'), name)
 
 
+    def test_put_bucketlist_wrong_id(self):
+        """
+        Method tests the endpoint for put bucketlist when an incorrect id is passed
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        data = {"name": "new_bucketlist_name"}
+        bucketlist = BucketList.query.filter_by(id=0).first()
+        self.assertFalse(bucketlist)
+        response = self.put_bucketlist("test@test.com", 'test', 0, data)
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(
+            result['message'],
+            'Bucketlist with ID {} not found in the database'.format(0)
+        )
+        
+
     def get_bucketlist(self, email, password, bucketlist_id):
         """
         Method is used to get a bucketlist basing on the id passed
