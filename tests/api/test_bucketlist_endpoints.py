@@ -177,6 +177,22 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         )
 
 
+    def test_search_bucketlist(self):
+        """
+        Tests that is an argument q containing the bucketlist name is passed, then the bucketlist is
+        returned
+        """
+        email = "test@test.com"
+        _pword = "test"
+        arg_type = 'q'
+        arg_value = 'bucketlist'
+        user = User.query.filter_by(email=email).first()
+        response = self.get_argument_bucketlist(email, _pword, arg_type, arg_value)
+        result = json.loads(response.data)
+        self.assertEqual(len(result), 2)
+
+
+
     def get_bucketlist(self, email, password, bucketlist_id):
         """
         Method is used to get a bucketlist basing on the id passed
