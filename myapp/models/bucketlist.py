@@ -13,7 +13,7 @@ class BucketList(BaseModel):
     name = db.Column(db.String(150), index=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
-    bucketlist_item = db.relationship(
+    bucketlist_items = db.relationship(
         BucketListItem, backref='bucketlist_item', uselist=True, cascade='delete,all'
     )
 
@@ -29,7 +29,7 @@ class BucketList(BaseModel):
         return False
 
 
-    def add_bucketlist(self):
+    def save_bucketlist(self):
         """
         Method is used to add a bucketlist to the database
         """
