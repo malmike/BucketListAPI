@@ -71,16 +71,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         Method tests the endpoint for getting a bucketlist when the bucketlist id is passed
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
-        user = User.query.filter_by(email="test@test.com").first()
+        email = "test@test.com"
+        _pword = "test"
+        user = User.query.filter_by(email=email).first()
         bucketlist = BucketList.query.filter_by(id=1).first()
         self.assertEqual(bucketlist.user_id, user.id)
-        headers = self.authentication_headers(email="test@test.com", password="test")
-        response = self.client.get(
-            '/api/v1/bucketlist/1',
-            content_type="application/json",
-            headers=headers,
-            follow_redirects=True
-        )
+        response = self.get_bucketlist(email, _pword, 1)
         result = json.loads(response.data)
         self.assertIsInstance(result, dict)
         self.assertEqual(result.get('name'), bucketlist.name)
@@ -91,18 +87,17 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         Tests the endpoint for getting a bucketlist when the wrong id is passed returns an error
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
-        user = User.query.filter_by(email="test@test.com").first()
+        email = "test@test.com"
+        _pword = "test"
         bucketlist = BucketList.query.filter_by(id=0).first()
         self.assertFalse(bucketlist)
-        headers = self.authentication_headers(email="test@test.com", password="test")
-        response = self.client.get(
-            '/api/v1/bucketlist/0',
-            content_type="application/json",
-            headers=headers,
-            follow_redirects=True
-        )
+        response = self.get_bucketlist(email, _pword, 0)
         result = json.loads(response.data)
         self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(
+            result['message'],
+            'Bucketlist with ID {} not found in the database'.format(0)
+        )
 
 
     def add_bucketlist(self, email, password, buckelist_name):
@@ -117,3 +112,18 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             headers=headers,
             follow_redirects=True
         )
+
+
+    def get_bucketlist(self, email, password, bucketlist_id):
+        """
+        Method is used to get a bucketlist basing on the id passed
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.put(
+            '/api/v1/bucketlist/{}'.format(bucketlist_id),
+            content_type="application/json",
+            data=json.dumps({"name": "new_bucketlist_name"}),
+            headers=headers,
+            follow_redirects=True
+        )
+
