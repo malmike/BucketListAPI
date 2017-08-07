@@ -61,7 +61,7 @@ class User(BaseModel):
         return bcrypt.check_password_hash(self._password, password)
 
 
-    def add_user(self):
+    def save_user(self):
         """
         Method is used to add a user to the database
         """
