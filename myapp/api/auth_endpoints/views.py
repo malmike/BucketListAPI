@@ -49,7 +49,7 @@ class RegisterUser(Resource):
         user = User(email=email, password=password)
 
         try:
-            check = user.add_user()
+            check = user.save_user()
             if check:
                 auth_token = user.generate_authentication_token()
                 response = {
