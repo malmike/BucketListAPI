@@ -75,6 +75,27 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertTrue(item2.completed)
 
 
+    def test_put_item_wrong_id(self):
+        """
+        Method tests the error raised when end point for updating a bucket list item
+        using put contains the wrong id
+        """
+        data = {"name": "bucketlist_item_name", "completed": True}
+        email = "test@test.com"
+        _pword = "test"
+        user = User.query.filter_by(email=email).first()
+        bucketlist = BucketList.query.filter_by(user_id=user.id, name="test_bucketlist").first()
+        item = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=0).first()
+        self.assertFalse(item)
+
+        response = self.put_bucketlist_item(email, _pword, bucketlist.id, 0, data)
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(
+            result['message'],
+            'Bucketlist Item with ID {} not found in the database'.format(0)
+        )
+
 
     def add_bucketlist_item(self, email, password, buckelist_id):
         """
