@@ -30,7 +30,7 @@ class BucketListTests(BaseCase, TestCase):
         """
         user = User.query.filter_by(email="test2@test.com").first()
         bucketlist = BucketList(name='test_bucketlist3', user_id=user.id)
-        check = bucketlist.add_bucketlist()
+        check = bucketlist.save_bucketlist()
         self.assertTrue(check, "Bucketlist should be added")
         self.assertTrue(
             bucketlist.id,
@@ -45,7 +45,7 @@ class BucketListTests(BaseCase, TestCase):
         """
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist = BucketList(name='test_bucketlist', user_id=user.id)
-        check = bucketlist.add_bucketlist()
+        check = bucketlist.save_bucketlist()
         self.assertFalse(check, "Bucketlist should not be added")
         self.assertFalse(
             bucketlist.id,
@@ -76,5 +76,5 @@ class BucketListTests(BaseCase, TestCase):
         returns a list of bucketlist items specific to that bucketlist
         """
         bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
-        self.assertTrue(isinstance(bucketlist.bucketlist_item, list))
+        self.assertTrue(isinstance(bucketlist.bucketlist_items, list))
 
