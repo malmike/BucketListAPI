@@ -74,4 +74,30 @@ class BucketListEndPoint(Resource):
         """
         Retrieves existing bucketlists for specific user
         """
-        return g.current_user.bucketlist
+        return g.current_user.bucketlists
+
+
+@bucketlist_api.route('/<int:bucketlist_id>', endpoint='individual_bucketlist')
+class IndividualBucketList(Resource):
+    """
+    Class contains methods specific to an individual bucketlist
+    """
+    @bucketlist_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_api.response(201, 'Successful Bucketlist Added')
+    @bucketlist_api.response(409, 'Bucketlist Exists')
+    @bucketlist_api.response(
+        500,
+        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
+    )
+    @bucketlist_api.marshal_with(BUCKETLIST)
+    def get(self, bucketlist_id):
+        """
+        Retrieves existing bucketlists for specific user
+        """
+        bucketlists = g.current_user.bucketlists
+        _bucketlist = next(
+            (bucketlist for bucketlist in bucketlists if bucketlist.id == bucketlist_id),
+            None
+        )
+        return _bucketlist
