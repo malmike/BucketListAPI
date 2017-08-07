@@ -45,6 +45,27 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertEqual(bucketlist_no, new_bucketlist_no)
 
 
+    def test_get_bucketlists(self):
+        """
+        Method test the endpoint for getting bucketlists
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        We will check the number of items brought back to those when directly accessing the database
+        """
+        email = "test@test.com"
+        _pword = "test"
+        user = User.query.filter_by(email=email).first()
+        bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
+        headers = self.authentication_headers(email=email, password=_pword)
+        response = self.client.get(
+            '/api/v1/bucketlist',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        result = json.loads(response.data)
+        self.assertEqual(len(result), bucketlist_no)
+
+
     def add_bucketlist(self, email, password, buckelist_name):
         """
         Method is used to send request to the api to add a bucketlist for testing
