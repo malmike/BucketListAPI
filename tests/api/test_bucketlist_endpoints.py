@@ -190,6 +190,19 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         )
 
 
+    def get_argument_bucketlist(self, email, password, arg_type, arg_value):
+        """
+        Method is used to get a bucketlist basing on the id passed
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.get(
+            '/api/v1/bucketlist?{}={}'.format(arg_type, arg_value),
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+
+
     def put_bucketlist(self, email, password, bucketlist_id, data):
         """
         Method is used to test passing of put data for the bucketlist to the api
@@ -216,5 +229,4 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             headers=headers,
             follow_redirects=True
         )
-
 
