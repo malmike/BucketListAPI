@@ -71,7 +71,7 @@ class BucketListEndPoint(Resource):
         """
         if g.current_user.bucketlists:
             return g.current_user.bucketlists, 200
-        abort(400, 'User has no single bucketlist')
+        return abort(400, 'User has no single bucketlist')
 
 
 @bucketlist_api.route('/<int:bucketlist_id>', endpoint='individual_bucketlist')
@@ -95,7 +95,7 @@ class IndividualBucketList(Resource):
         )
         if _bucketlist:
             return _bucketlist
-        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
@@ -114,7 +114,7 @@ class IndividualBucketList(Resource):
             bucketlist.name = name
             bucketlist.save_bucketlist()
             return bucketlist, 200
-        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
@@ -133,4 +133,4 @@ class IndividualBucketList(Resource):
                 'message': 'Bucketlist with ID {} deleted'.format(bucketlist_id)
             }
             return response, 200
-        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
