@@ -17,6 +17,7 @@ class Config(object):
     __dbname = "postgresql://localhost/bucketlist_api_dev"
     SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __dbname
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEFAULT_PAGINATION_NUMBER = 20
 
 class DevelopmentConfig(Config):
     """
