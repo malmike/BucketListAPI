@@ -20,7 +20,7 @@ BUCKETLISTITEM = bucketlist_item_api.model(
         'date_modified': fields.DateTime(required=False, attribute='modified'),
         'bucketlist_id': fields.Integer(required=True),
         'completed': fields.Boolean(),
-        'finished_by': fields.DateTime(required=True),
+        'finished_by': fields.Date(required=True),
     }
 )
 
@@ -43,6 +43,36 @@ class BucketListItemEndPoint(Resource):
             return bucketlist.bucketlist_items
         abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
-    
+
+    @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_item_api.response(200, 'Successful Added Bucketlist item')
+    @bucketlist_item_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_item_api.response(500, 'Internal Server Error')
+    @bucketlist_item_api.doc(model='BucketlistItem', body=BUCKETLISTITEM)
+    def post(self, bucketlist_id):
+        """
+        Handles the adding bucketlist items
+        """
+        post_data = request.get_json()
+        name = post_data.get('name')
+        finished_by = post_data.get('finished_by')
+        bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
+        try:
+            if bucketlist:
+                bucketlist_item = BucketListItem(
+                    name=name,
+                    finished_by=finished_by,
+                    bucketlist_id = bucketlist.id
+                )
+                bucketlist_item.save_bucketlist_item()
+                response = {
+                    'status': 'success',
+                    'message': 'Bucket list item added'
+                }
+                return response, 201
+            abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        except Exception as e:
+            return abort(500, message='Error adding bucketlist item:{}'.format(e.message))
 
 
