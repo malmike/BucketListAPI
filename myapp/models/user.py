@@ -22,7 +22,7 @@ class User(BaseModel):
     email = db.Column(db.String(50), index=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
-    bucketlist = db.relationship(
+    bucketlists = db.relationship(
         BucketList, backref='user', uselist=True, cascade='delete,all'
     )
 
