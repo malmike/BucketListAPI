@@ -21,7 +21,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         _pword = "test"
         user = User.query.filter_by(email=email).first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
-        response = self.add_bucketlist(email, _pword, user.id, 'test_bucketlist_name')
+        response = self.add_bucketlist(email, _pword, 'test_bucketlist_name')
         result = json.loads(response.data)
         self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucketlist Added')
@@ -37,7 +37,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         """
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
-        response = self.add_bucketlist("test@test.com", "test", user.id, 'test_bucketlist')
+        response = self.add_bucketlist("test@test.com", "test", 'test_bucketlist')
         result = json.loads(response.data)
         self.assertEqual(response.status, '409 CONFLICT')
         self.assertEqual(result['message'], 'Bucketlist Exists')
