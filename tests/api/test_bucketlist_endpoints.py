@@ -76,7 +76,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         user = User.query.filter_by(email=email).first()
         bucketlist = BucketList.query.filter_by(id=1).first()
         self.assertEqual(bucketlist.user_id, user.id)
-        response = self.get_bucketlist(email, _pword, 1)
+        response = self.get_bucketlist(email, _pword, bucketlist.id)
         result = json.loads(response.data)
         self.assertIsInstance(result, dict)
         self.assertEqual(result.get('name'), bucketlist.name)
@@ -114,16 +114,46 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         )
 
 
+    def test_put_bucketlist(self):
+        """
+        Method tests the endpoint for put bucketlist i.e alter bucketlist data
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        data = {"name": "new_bucketlist_name"}
+        user = User.query.filter_by(email="test@test.com").first()
+        bucketlist = BucketList.query.filter_by(id=1).first()
+        name = bucketlist.name
+        self.assertEqual(bucketlist.user_id, user.id)
+        response = self.put_bucketlist("test@test.com", 'test', bucketlist.id, data)
+        result = json.loads(response.data)
+        self.assertIsInstance(result, dict)
+        self.assertNotEqual(result.get('name'), name)
+
+
     def get_bucketlist(self, email, password, bucketlist_id):
         """
         Method is used to get a bucketlist basing on the id passed
         """
         headers = self.authentication_headers(email=email, password=password)
-        return self.client.put(
+        return self.client.get(
             '/api/v1/bucketlist/{}'.format(bucketlist_id),
             content_type="application/json",
-            data=json.dumps({"name": "new_bucketlist_name"}),
             headers=headers,
             follow_redirects=True
         )
+
+
+    def put_bucketlist(self, email, password, bucketlist_id, data):
+        """
+        Method is used to test passing of put data for the bucketlist to the api
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.put(
+            '/api/v1/bucketlist/{}'.format(bucketlist_id),
+            content_type="application/json",
+            data=json.dumps(data),
+            headers=headers,
+            follow_redirects=True
+        )
+
 
