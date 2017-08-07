@@ -47,7 +47,7 @@ class BucketListEndPoint(Resource):
         bucketlist = BucketList(name=name, user_id=g.current_user.id)
 
         try:
-            check = bucketlist.add_bucketlist()
+            check = bucketlist.save_bucketlist()
             if check:
                 response = {
                     'status': 'success',
@@ -63,18 +63,16 @@ class BucketListEndPoint(Resource):
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
-    @bucketlist_api.response(201, 'Successful Bucketlist Added')
-    @bucketlist_api.response(409, 'Bucketlist Exists')
-    @bucketlist_api.response(
-        500,
-        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
-    )
+    @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
+    @bucketlist_api.response(400, 'User has no single bucketlist')
     @bucketlist_api.marshal_with(BUCKETLIST, as_list=True)
     def get(self):
         """
         Retrieves existing bucketlists for specific user
         """
-        return g.current_user.bucketlists
+        if g.current_user.bucketlists:
+            return g.current_user.bucketlists, 200
+        abort(400, 'User has no single bucketlist')
 
 
 @bucketlist_api.route('/<int:bucketlist_id>', endpoint='individual_bucketlist')
@@ -84,12 +82,8 @@ class IndividualBucketList(Resource):
     """
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
-    @bucketlist_api.response(201, 'Successful Bucketlist Added')
-    @bucketlist_api.response(409, 'Bucketlist Exists')
-    @bucketlist_api.response(
-        500,
-        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
-    )
+    @bucketlist_api.response(200, 'Successfully Retrieved Bucketlist')
+    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
     @bucketlist_api.marshal_with(BUCKETLIST)
     def get(self, bucketlist_id):
         """
@@ -100,4 +94,25 @@ class IndividualBucketList(Resource):
             (bucketlist for bucketlist in bucketlists if bucketlist.id == bucketlist_id),
             None
         )
-        return _bucketlist
+        if _bucketlist:
+            return _bucketlist
+        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+
+
+    @bucketlist_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
+    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.marshal_with(BUCKETLIST)
+    def put(self, bucketlist_id):
+        """
+        Retrieves existing bucketlists for specific user
+        """
+        post_data = request.get_json()
+        name = post_data.get('name')
+        bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
+        if bucketlist:
+            bucketlist.name = name
+            bucketlist.save_bucketlist()
+            return bucketlist, 200
+        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
