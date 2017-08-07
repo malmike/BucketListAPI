@@ -97,6 +97,29 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         )
 
 
+    def test_delete_bucketlist_item(self):
+        """
+        Method tests the error raised when end point for updating a bucket list item
+        using put contains the wrong id
+        """
+        email = "test@test.com"
+        _pword = "test"
+        user = User.query.filter_by(email=email).first()
+        bucketlist = BucketList.query.filter_by(user_id=user.id, name="test_bucketlist").first()
+        item = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
+        self.assertTrue(item)
+
+        response = self.delete_bucketlist_item(email, _pword, bucketlist.id, item.id)
+        result = json.loads(response.data)
+        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(
+            result['message'],
+            'Bucketlist Item with ID {} deleted'.format(item.id)
+        )
+        item = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
+        self.assertFalse(item)
+
+
     def add_bucketlist_item(self, email, password, buckelist_id):
         """
         Method is used to send request to the api to add a bucketlist for testing
@@ -125,3 +148,15 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             follow_redirects=True
         )
 
+
+    def delete_bucketlist_item(self, email, password, bucketlist_id, item_id):
+        """
+        Method is used to send request to delete a bucketlist item
+        """
+        headers = self.authentication_headers(email=email, password=password)
+        return self.client.delete(
+            '/api/v1/bucketlist/{}/items/{}'.format(bucketlist_id, item_id),
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
