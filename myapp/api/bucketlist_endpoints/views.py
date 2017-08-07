@@ -28,7 +28,7 @@ class BucketListEndPoint(Resource):
     """
     Class contains operations which handle requests specific to a bucketlist
     """
-    @bucketlist_api.header('X-Header', 'x-access-token', required=True)
+    @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
     @bucketlist_api.response(409, 'Bucketlist Exists')
@@ -60,3 +60,18 @@ class BucketListEndPoint(Resource):
         except Exception as e:
             return abort(500, message='Error creating your account:{}'.format(e.message))
 
+
+    @bucketlist_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_api.response(201, 'Successful Bucketlist Added')
+    @bucketlist_api.response(409, 'Bucketlist Exists')
+    @bucketlist_api.response(
+        500,
+        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
+    )
+    @bucketlist_api.marshal_with(BUCKETLIST, as_list=True)
+    def get(self):
+        """
+        Retrieves existing bucketlists for specific user
+        """
+        return g.current_user.bucketlist
