@@ -88,8 +88,8 @@ class User(BaseModel):
         serializer = Serializer(Config.SECRET_KEY, expires_in=int(duration))
         return serializer.dumps({"id":self.id})
 
-
-    def verify_authentication_token(self, token):
+    @staticmethod
+    def verify_authentication_token(token):
         """
         Method is used to verify authentication token
         """
@@ -100,7 +100,7 @@ class User(BaseModel):
             return False
         except BadSignature:
             return False
-        return True if data['id'] == self.id else False
+        return data['id'] if data['id'] else False
 
 
     def __repr__(self):
