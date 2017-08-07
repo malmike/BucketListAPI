@@ -41,7 +41,7 @@ class BucketListItemEndPoint(Resource):
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:
             return bucketlist.bucketlist_items
-        abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
@@ -76,3 +76,41 @@ class BucketListItemEndPoint(Resource):
             return abort(500, message='Error adding bucketlist item:{}'.format(e.message))
 
 
+@bucketlist_item_api.route(
+    '/<int:bucketlist_id>/items/<item_id>',
+    endpoint='single_bucketlist_item'
+)
+class SingleBucketListItem(Resource):
+    """
+    Class handles request made towards a single bucketlist item
+    """
+    @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
+    @bucketlist_item_api.response(400, 'No existing bucketlist or bucketlist_item with the ids passed')
+    @bucketlist_item_api.marshal_with(BUCKETLISTITEM)
+    def put(self, bucketlist_id, item_id):
+        """
+        Handles put requests to alter a single bucketlist item
+        """
+        put_data = request.get_json()
+        name = put_data.get('name') or None
+        completed = put_data.get('completed') or None
+
+        bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
+        if bucketlist:
+            item = BucketListItem.query.filter_by(
+                bucketlist_id=bucketlist_id,
+                id=item_id
+            ).first()
+            if item:
+                try:
+                    item.name = name if name is not None else item.name
+                    item.completed = completed if completed is not None else item.completed
+                    item.save_bucketlist_item()
+                    return item, 200
+                except Exception as e:
+                    return abort(500, message='Error updating bucketlist item:{}'.format(e.message))
+            return abort(400, 'Bucketlist Item with ID {} not found in the database'.format(item_id))
+
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(item_id))
