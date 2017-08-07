@@ -20,7 +20,7 @@ class BucketListItem(BaseModel):
     completed = db.Column(db.Boolean, default=False)
 
 
-    def add_bucketlist_item(self):
+    def save_bucketlist_item(self):
         """
         Method is used to add a bucketlist item to the database
         """
