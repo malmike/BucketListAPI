@@ -105,10 +105,10 @@ class IndividualBucketList(Resource):
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
         """
-        Retrieves existing bucketlists for specific user
+        Updates existing bucketlists for specific user
         """
-        post_data = request.get_json()
-        name = post_data.get('name')
+        put_data = request.get_json()
+        name = put_data.get('name')
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:
             bucketlist.name = name
