@@ -3,7 +3,6 @@ This file contains the endpoints for bucketlists
 """
 from flask_restplus import Namespace, Resource, abort, fields
 from flask import request, g
-from re import search
 from myapp.models.bucketlist import BucketList
 from myapp.utilities.Utilities import auth
 
