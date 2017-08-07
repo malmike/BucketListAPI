@@ -114,3 +114,38 @@ class SingleBucketListItem(Resource):
             return abort(400, 'Bucketlist Item with ID {} not found in the database'.format(item_id))
 
         return abort(400, 'Bucketlist with ID {} not found in the database'.format(item_id))
+
+
+    @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
+    @bucketlist_item_api.response(400, 'No existing bucketlist or bucketlist_item with the ids passed')
+    def delete(self, bucketlist_id, item_id):
+        """
+        Handles delete requests to for bucketlist item
+        """
+        bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
+        if bucketlist:
+            item = BucketListItem.query.filter_by(
+                bucketlist_id=bucketlist_id,
+                id=item_id
+            ).first()
+            if item:
+                try:
+                    item.delete_bucketlist_item()
+                    response = {
+                        'status': 'success',
+                        'message': 'Bucketlist Item with ID {} deleted'.format(item_id)
+                    }
+                    return response, 200
+                except Exception as e:
+                    return abort(500, message='Error updating bucketlist item:{}'.format(e.message))
+            return abort(
+                400,
+                'Bucketlist Item with ID {} not found in the database'.format(item_id)
+            )
+
+        return abort(
+            400,
+            'Bucketlist with ID {} not found in the database'.format(item_id)
+        )
