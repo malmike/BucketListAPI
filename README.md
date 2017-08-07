@@ -8,6 +8,13 @@
 
 This is an API for a bucket list designed using flask framework for python
 
+### Command for creation of the database and applying migrations to it
+$ python manage.py db init
+$ python manage.py db migrate
+$ python manage.py db upgrade
+$ python manage.py db --help
+
+
 ### Specifications for the API are shown below
 
 | EndPoint | Functionality |
