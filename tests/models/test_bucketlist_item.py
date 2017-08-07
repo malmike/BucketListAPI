@@ -37,7 +37,7 @@ class BucketListItemTests(BaseCase, TestCase):
             bucketlist_id=bucketlist.id,
             finished_by=date(2020, 9, 22)
         )
-        check = item.add_bucketlist_item()
+        check = item.save_bucketlist_item()
         self.assertTrue(check, "Bucketlist item should be added")
         self.assertTrue(
             item.id,
