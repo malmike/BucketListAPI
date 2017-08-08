@@ -1,9 +1,19 @@
 """
 Script contains the model for a user
 """
-from myapp import db, bcrypt, app
-from myapp.models.base_model import BaseModel
-from myapp.models.bucketlist import BucketList
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer as Serializer,
+    BadSignature, SignatureExpired
+)
+from flask_bcrypt import Bcrypt
+
+from instance.config import Config
+from .base_model import BaseModel, db
+from .bucketlist import BucketList
+from re import search
+
+
+bcrypt = Bcrypt()
 
 class User(BaseModel):
     """
@@ -12,7 +22,7 @@ class User(BaseModel):
     email = db.Column(db.String(50), index=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
-    bucketlist = db.relationship(
+    bucketlists = db.relationship(
         BucketList, backref='user', uselist=True, cascade='delete,all'
     )
 
@@ -31,7 +41,7 @@ class User(BaseModel):
         Method helps set the password property for the class
         """
         self._password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
+            password, Config.BCRYPT_LOG_ROUNDS
         ).decode()
 
 
@@ -51,7 +61,7 @@ class User(BaseModel):
         return bcrypt.check_password_hash(self._password, password)
 
 
-    def add_user(self):
+    def save_user(self):
         """
         Method is used to add a user to the database
         """
@@ -69,6 +79,28 @@ class User(BaseModel):
             self.delete_data_set()
             return True
         return False
+
+
+    def generate_authentication_token(self, duration=Config.AUTH_TOKEN_DURATION):
+        """
+        Method for generating a JWT authentication token
+        """
+        serializer = Serializer(Config.SECRET_KEY, expires_in=int(duration))
+        return serializer.dumps({"id":self.id})
+
+    @staticmethod
+    def verify_authentication_token(token):
+        """
+        Method is used to verify authentication token
+        """
+        serializer = Serializer(Config.SECRET_KEY)
+        try:
+            data = serializer.loads(token)
+        except SignatureExpired:
+            return False
+        except BadSignature:
+            return False
+        return data['id'] if data['id'] else False
 
 
     def __repr__(self):

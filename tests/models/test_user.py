@@ -2,6 +2,7 @@
 Contains tests for the user model
 """
 from unittest import TestCase
+from time import sleep
 
 from tests.base_case import BaseCase
 from myapp.models.user import User
@@ -59,7 +60,7 @@ class UserTests(BaseCase, TestCase):
         """
         _pword = "test"
         user = User(email='test@adduser.com', password=_pword)
-        check = user.add_user()
+        check = user.save_user()
         self.assertTrue(check, "User should be added")
         self.assertTrue(
             user.id,
@@ -74,7 +75,7 @@ class UserTests(BaseCase, TestCase):
         """
         _pword = "test"
         user = User(email='test@test.com', password=_pword)
-        check = user.add_user()
+        check = user.save_user()
         self.assertFalse(check, "User should already exist")
         self.assertFalse(
             user.id,
@@ -105,4 +106,66 @@ class UserTests(BaseCase, TestCase):
         returns a list of bucketlists specific to that user
         """
         user = User.query.filter_by(email="test@test.com").first()
-        self.assertTrue(isinstance(user.bucketlist, list))
+        self.assertTrue(isinstance(user.bucketlists, list))
+
+
+    def test_token_generation(self):
+        """
+        Method tests that the generate token method returns a token
+        """
+        token = self.create_token()['token']
+        self.assertTrue(isinstance(token, bytes))
+
+
+    def test_decode_token(self):
+        """
+        Tests that the token created can be decoded
+        """
+        token_values = self.create_token()
+        self.assertTrue(
+            token_values['user'].verify_authentication_token(token_values['token'])
+        )
+
+
+    def test_token_expiration(self):
+        """
+        Should expect false when the token expires
+        """
+        token_values = self.create_token(duration=0.5, sleep_time=1)
+        self.assertFalse(
+            token_values['user'].verify_authentication_token(token_values['token'])
+        )
+
+
+    def test_token_aulteration(self):
+        """
+        Method should expect a false due to aulteration of the
+        authentication token
+        """
+        token_values = self.create_token()
+        a = 'a'.encode('utf-8')
+        token = token_values['token'] + a
+        self.assertFalse(
+            token_values['user'].verify_authentication_token(token)
+        )
+
+
+    def test_token_distinct(self):
+        """
+        Tests that a token is distinct i.e can not generate the
+        same token after token expiry
+        """
+        token1 = self.create_token(duration=0.5, sleep_time=1)['token']
+        token2 = self.create_token(duration=0.5)['token']
+        self.assertNotEqual(token1, token2)
+
+
+    def create_token(self, duration=300, sleep_time=0):
+        """
+        Method is used to call the generate_authentication_token
+        and returns a token
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        token = user.generate_authentication_token(duration=duration)
+        sleep(sleep_time)
+        return {"user": user, "token":token}
