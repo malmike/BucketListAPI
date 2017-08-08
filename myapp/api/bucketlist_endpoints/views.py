@@ -1,11 +1,13 @@
 """
 This file contains the endpoints for bucketlists
 """
-from flask_restplus import Namespace, Resource, abort, fields
-from flask import request, g
+from flask_restplus import Namespace, Resource, abort, fields, marshal
+from flask import request, g, url_for
+from flask_sqlalchemy import Pagination
 from sqlalchemy import desc
 from myapp.models.bucketlist import BucketList
 from myapp.utilities.Utilities import auth
+from instance.config import Config
 
 bucketlist_api = Namespace('bucketlist', description='Bucketlist Details')
 
@@ -24,6 +26,8 @@ BUCKETLIST = bucketlist_api.model(
 
 bucketlist_parser = bucketlist_api.parser()
 bucketlist_parser.add_argument('q', type=str, help='Search term for querying bucketlist', required=False)
+bucketlist_parser.add_argument('limit', type=str, help='Sets the limit for pargination', required=False)
+bucketlist_parser.add_argument('page', type=str)
 
 @bucketlist_api.route('', endpoint='bucketlist')
 class BucketListEndPoint(Resource):
@@ -67,22 +71,50 @@ class BucketListEndPoint(Resource):
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
     @bucketlist_api.response(400, 'User has no single bucketlist')
-    @bucketlist_api.marshal_with(BUCKETLIST, as_list=True)
     @bucketlist_api.expect(bucketlist_parser)
     def get(self):
         """
         Retrieves existing bucketlists for specific user
         """
         search_term = request.args.get('q') or None
-        if search_term:
-            bucketlists = BucketList.query.filter(
-                    BucketList.name.like('%'+search_term+'%'),
-                    BucketList.user_id==g.current_user.id
-                ).order_by(desc(BucketList.created)).all()
-            return bucketlists, 200
+        limit = request.args.get('limit') or Config.DEFAULT_PAGINATION_NUMBER
+        page_limit = 100 if int(limit) > 100 else int(limit)
+        page = request.args.get('page') or 1
 
-        if g.current_user.bucketlists:
-            return g.current_user.bucketlists, 200
+        if page_limit < 1 or page < 1:
+            return abort(400, 'Page or Limit cannot be negative values')
+
+        bucketlist_data = BucketList.query.filter_by(user_id=g.current_user.id).\
+            order_by(desc(BucketList.created))
+        if bucketlist_data.all():
+            bucketlists = bucketlist_data
+
+            if search_term:
+                bucketlists = bucketlist_data.filter(
+                    BucketList.name.ilike('%'+search_term+'%')
+                )
+
+            bucketlist_paged = bucketlists.paginate(
+                page=page, per_page=page_limit, error_out=True
+            )
+            result = dict(data=marshal(bucketlist_paged.items, BUCKETLIST))
+
+            pages = {
+                'page': page, 'per_page': page_limit,
+                'total_data': bucketlist_paged.total, 'pages': bucketlist_paged.pages
+            }
+
+            if page == 1:
+                pages['prev_page'] = url_for('api.bucketlist')+'?limit={}'.format(page_limit)
+
+            if page > 1:
+                pages['prev_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page-1)
+
+            if page < bucketlist_paged.pages:
+                pages['next_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page+1)
+
+            result.update(pages)
+            return result
 
         return abort(400, 'User has no single bucketlist')
 
