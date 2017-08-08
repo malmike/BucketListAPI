@@ -71,6 +71,7 @@ class BucketListEndPoint(Resource):
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
     @bucketlist_api.response(400, 'User has no single bucketlist')
+    @bucketlist_api.response(404, 'Pages cannot be negative')
     @bucketlist_api.expect(bucketlist_parser)
     def get(self):
         """
@@ -82,7 +83,7 @@ class BucketListEndPoint(Resource):
         page = request.args.get('page') or 1
 
         if page_limit < 1 or page < 1:
-            return abort(400, 'Page or Limit cannot be negative values')
+            return abort(404, 'Page or Limit cannot be negative values')
 
         bucketlist_data = BucketList.query.filter_by(user_id=g.current_user.id).\
             order_by(desc(BucketList.created))
