@@ -5,9 +5,10 @@ environment in which the tests can run
 """
 from flask_testing import TestCase
 from datetime import date
+import json
 
 from instance import ENVIRONMENTS
-from myapp import create_app, db
+from manage import APP, db
 from myapp.models.user import User
 from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
@@ -23,7 +24,7 @@ class BaseCase(TestCase):
         """
         Creates a flask instance for testing
         """
-        return create_app(ENVIRONMENTS['testing'])
+        return APP
 
 
     def setUp(self):
@@ -31,9 +32,7 @@ class BaseCase(TestCase):
         Sets up the default configurations, and in this case creates
         the database to be used
         """
-        self.app = self.create_app()
-        self.client = self.app.test_client
-        with self.app.app_context():
+        with self.app.test_client():
             db.session.close()
             db.drop_all()
             db.create_all()
@@ -95,6 +94,31 @@ class BaseCase(TestCase):
         db.session.add(item)
         db.session.add(item2)
         db.session.commit()
+
+
+    def post_user_data(self, path, email, _pword="test"):
+        """
+        Method is used to send user data to the api basing on the
+        path passed as an argument
+        """
+        return self.client.post(
+            path,
+            data=json.dumps({"email": email, "password": _pword}),
+            content_type="application/json",
+            follow_redirects=True
+        )
+
+
+    def authentication_headers(self, email, password):
+        """
+        Method generates authentication headers for the test user
+        basing on the email and password passed in the arguments
+        """
+        path = '/api/v1/auth/login'
+        response = self.post_user_data(path=path, email=email, _pword=password)
+        result = json.loads(response.data)
+        self.assertTrue(result['auth_token'])
+        return {'x-access-token': result['auth_token']}
 
 
     @staticmethod

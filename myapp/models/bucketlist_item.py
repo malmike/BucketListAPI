@@ -4,8 +4,7 @@ Script contains the model for a bucketlist items
 from datetime import datetime
 import pytz
 
-from myapp import db
-from myapp.models.base_model import BaseModel
+from .base_model import BaseModel, db
 
 
 class BucketListItem(BaseModel):
@@ -18,9 +17,10 @@ class BucketListItem(BaseModel):
         default=datetime.now(tz=pytz.timezone('Africa/Kampala'))
     )
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucket_list.id'), nullable=False)
+    completed = db.Column(db.Boolean, default=False)
 
 
-    def add_bucketlist_item(self):
+    def save_bucketlist_item(self):
         """
         Method is used to add a bucketlist item to the database
         """
