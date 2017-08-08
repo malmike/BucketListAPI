@@ -3,6 +3,7 @@ File contains tests for the bucketlist endpoints
 """
 from unittest import TestCase
 import json
+from math import ceil
 
 from tests.base_case import BaseCase
 from myapp.models.user import User
@@ -63,7 +64,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             follow_redirects=True
         )
         result = json.loads(response.data)
-        self.assertEqual(len(result), bucketlist_no)
+        self.assertEqual(len(result['data']), bucketlist_no)
 
 
     def test_get_bucketlist(self):
@@ -78,7 +79,6 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertEqual(bucketlist.user_id, user.id)
         response = self.get_bucketlist(email, _pword, bucketlist.id)
         result = json.loads(response.data)
-        self.assertIsInstance(result, dict)
         self.assertEqual(result.get('name'), bucketlist.name)
 
 
@@ -189,8 +189,34 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         user = User.query.filter_by(email=email).first()
         response = self.get_argument_bucketlist(email, _pword, arg_type, arg_value)
         result = json.loads(response.data)
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result['data']), 2)
 
+
+    def test_limit_bucketlist(self):
+        """
+        Tests that if a limit is passed as a parameter pagination occurs
+        """
+        email = "test@test.com"
+        _pword = "test"
+        arg_type = 'limit'
+        arg_value = 3
+        user = User.query.filter_by(email=email).first()
+        # Populate bucketlist
+        for i in range(10):
+            bucketlist = BucketList(name='bucketlist_name{}'.format(i), user_id=user.id)
+            bucketlist.save_bucketlist()
+
+        bucketlist_no = BucketList.query.filter_by().count()
+        self.assertGreaterEqual(bucketlist_no, 10)
+        response = self.get_argument_bucketlist(email, _pword, arg_type, arg_value)
+        result = json.loads(response.data)
+        self.assertEqual(len(result['data']), arg_value)
+        self.assertEqual(result['page'], 1)
+        self.assertEqual(result['per_page'], arg_value)
+        self.assertEqual(result['total_data'], bucketlist_no)
+        self.assertEqual(result['pages'], ceil(bucketlist_no/arg_value))
+        self.assertEqual(result['prev_page'], '/api/v1/bucketlist?limit={}'.format(arg_value))
+        self.assertEqual(result['next_page'], '/api/v1/bucketlist?limit={}&page={}'.format(arg_value, 1+1))
 
 
     def get_bucketlist(self, email, password, bucketlist_id):
