@@ -22,6 +22,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Successfully Registered')
+        self.assertIsInstance(result['data'], dict)
 
 
     def test_user_already_registered(self):
@@ -64,6 +65,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Login Successful')
+        self.assertIsInstance(result['data'], dict)
 
 
     def test_non_existant_email(self):
