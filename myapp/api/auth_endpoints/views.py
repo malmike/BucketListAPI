@@ -14,6 +14,8 @@ auth_api = Namespace('auth', description='User authentication and registration')
 USER = auth_api.model(
     'User',
     {
+        'fname':fields.String(required=True, description="User's First Name", example="Fname"),
+        'lname':fields.String(required=True, description="User's Last Name", example="Lname"),
         'email':fields.String(required=True, description="User's Email", example="test@test.com"),
         'password':fields.String(
             required=True,
@@ -40,13 +42,17 @@ class RegisterUser(Resource):
         Handles post requests for registration of a new user
         """
         post_data = request.get_json()
+        fname = post_data.get('fname') or None
+        lname = post_data.get('lname') or None
         email = post_data.get('email')
         password = post_data.get('password')
 
         if not validate_email(email):
             return abort(409, 'Invalid Email Address')
+        if not fname or not lname:
+            return abort(409, "First and last name must be provided")
 
-        user = User(email=email, password=password)
+        user = User(email=email, fname=fname, lname=lname, password=password)
 
         try:
             check = user.save_user()
