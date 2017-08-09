@@ -19,6 +19,8 @@ class User(BaseModel):
     """
     Class used as a representation of the user model
     """
+    fname = db.Column(db.String(25), nullable=False)
+    lname = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(50), index=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
