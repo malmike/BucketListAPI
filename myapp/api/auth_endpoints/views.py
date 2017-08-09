@@ -3,7 +3,7 @@ This file contains the endpoints for authentication
 i.e user registration, user authentication, user verification
 and logout
 """
-from flask_restplus import Namespace, Resource, abort, fields
+from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g
 from re import search
 from myapp.models.user import User
@@ -58,11 +58,13 @@ class RegisterUser(Resource):
             check = user.save_user()
             if check:
                 auth_token = user.generate_authentication_token()
+                user_data = dict(data=marshal(user, USER))
                 response = {
                     'status': 'success',
                     'message': 'Successfully Registered',
                     'auth_token': auth_token
                 }
+                response.update(user_data)
                 return response, 201
             else:
                 response = {'status': 'fail', 'message': 'User Exists'}
@@ -96,11 +98,13 @@ class AuthenticateUser(Resource):
         try:
             if user and user.verify_password(password):
                 auth_token = user.generate_authentication_token()
+                user_data = dict(data=marshal(user, USER))
                 response = {
                     'status': 'success',
                     'message': 'Login Successful',
                     'auth_token': auth_token
                 }
+                response.update(user_data)
                 return response, 201
             response = {
                 'status': 'fail',
