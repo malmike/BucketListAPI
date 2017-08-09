@@ -33,7 +33,7 @@ class UserTests(BaseCase, TestCase):
         Tests the verify_token method in the utilities file
         """
         path = '/api/v1/auth/login'
-        data = data = {"email": "test@testing.com", "password":"test"}
+        data = data = {"email": "test@test.com", "password":"test"}
         response = self.post_user_data(path=path, data=data)
         result = json.loads(response.data)
         self.assertTrue(result['auth_token'])
