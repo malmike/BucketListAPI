@@ -12,6 +12,7 @@ bucketlist_item_api = Namespace('bucketlist', description='Bucketlist And Bucket
 BUCKETLISTITEM = bucketlist_item_api.model(
     'BucketlistItem',
     {
+        'id':fields.Integer(),
         'name': fields.String(
             required=True,
             description="Bucketlist Item Name",
