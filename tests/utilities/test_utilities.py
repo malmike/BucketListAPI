@@ -35,7 +35,7 @@ class UserTests(BaseCase, TestCase):
         path = '/api/v1/auth/login'
         data = data = {"email": "test@test.com", "password":"test"}
         response = self.post_user_data(path=path, data=data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertTrue(result['auth_token'])
         self.assertTrue(
             verify_token(result['auth_token'])

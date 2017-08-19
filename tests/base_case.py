@@ -127,7 +127,7 @@ class BaseCase(TestCase):
         path = '/api/v1/auth/login'
         data = {"email": email, "password": password}
         response = self.post_user_data(path, data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertTrue(result['auth_token'])
         return {'x-access-token': result['auth_token']}
 

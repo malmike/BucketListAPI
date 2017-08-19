@@ -32,7 +32,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             headers=headers,
             follow_redirects=True
         )
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(len(result), items_no)
 
 
@@ -47,7 +47,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist = BucketList.query.filter_by(user_id=user.id, name="test_bucketlist").first()
         item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
         response = self.add_bucketlist_item(email, _pword, bucketlist.id)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucket list item added')
         new_item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
@@ -68,7 +68,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(item.completed)
 
         response = self.put_bucketlist_item(email, _pword, bucketlist.id, 1, data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         item2 = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
         self.assertEqual(response.status, '200 OK')
         self.assertEqual(item2.name, "bucketlist_item_name")
@@ -89,7 +89,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(item)
 
         response = self.put_bucketlist_item(email, _pword, bucketlist.id, 0, data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(
             result['message'],
@@ -109,7 +109,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertTrue(item)
 
         response = self.delete_bucketlist_item(email, _pword, bucketlist.id, item.id)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '200 OK')
         self.assertEqual(
             result['message'],
@@ -132,7 +132,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(item)
 
         response = self.delete_bucketlist_item(email, _pword, bucketlist.id, 0)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(
             result['message'],

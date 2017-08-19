@@ -23,7 +23,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         user = User.query.filter_by(email=email).first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         response = self.add_bucketlist(email, _pword, 'test_bucketlist_name')
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucketlist Added')
         new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
@@ -39,8 +39,8 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         response = self.add_bucketlist("test@test.com", "test", 'test_bucketlist')
-        result = json.loads(response.data)
-        self.assertEqual(response.status, '409 CONFLICT')
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(result['message'], 'Bucketlist Exists')
         new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         self.assertEqual(bucketlist_no, new_bucketlist_no)
@@ -63,7 +63,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
             headers=headers,
             follow_redirects=True
         )
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(len(result['data']), bucketlist_no)
 
 
@@ -78,7 +78,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist = BucketList.query.filter_by(id=1).first()
         self.assertEqual(bucketlist.user_id, user.id)
         response = self.get_bucketlist(email, _pword, bucketlist.id)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(result.get('name'), bucketlist.name)
 
 
@@ -92,7 +92,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist = BucketList.query.filter_by(id=0).first()
         self.assertFalse(bucketlist)
         response = self.get_bucketlist(email, _pword, 0)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(
             result['message'],
@@ -125,7 +125,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         name = bucketlist.name
         self.assertEqual(bucketlist.user_id, user.id)
         response = self.put_bucketlist("test@test.com", 'test', bucketlist.id, data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertIsInstance(result, dict)
         self.assertNotEqual(result.get('name'), name)
 
@@ -139,7 +139,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist = BucketList.query.filter_by(id=0).first()
         self.assertFalse(bucketlist)
         response = self.put_bucketlist("test@test.com", 'test', 0, data)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(
             result['message'],
@@ -157,7 +157,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         id = bucketlist.id
         self.assertEqual(bucketlist.user_id, user.id)
         response = self.delete_bucketlist("test@test.com", 'test', bucketlist.id)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '200 OK')
         self.assertEqual(result.get('message'), 'Bucketlist with ID {} deleted'.format(id))
         self.assertFalse(BucketList.query.filter_by(id=1).first())
@@ -169,7 +169,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
         response = self.delete_bucketlist("test@test.com", 'test', 0)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(
             result['message'],
@@ -188,7 +188,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         arg_value = 'bucketlist'
         user = User.query.filter_by(email=email).first()
         response = self.get_argument_bucketlist(email, _pword, arg_type, arg_value)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(len(result['data']), 2)
 
 
@@ -209,7 +209,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist_no = BucketList.query.filter_by().count()
         self.assertGreaterEqual(bucketlist_no, 10)
         response = self.get_argument_bucketlist(email, _pword, arg_type, arg_value)
-        result = json.loads(response.data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(len(result['data']), arg_value)
         self.assertEqual(result['page'], 1)
         self.assertEqual(result['per_page'], arg_value)
