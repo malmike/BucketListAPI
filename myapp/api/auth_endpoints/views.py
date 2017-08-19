@@ -31,11 +31,8 @@ class RegisterUser(Resource):
     Handles requests for registering a new user
     """
     @auth_api.response(201, 'Successful User Registration')
-    @auth_api.response(409, 'User Data is invalid or User Exists')
-    @auth_api.response(
-        500,
-        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
-    )
+    @auth_api.response(400, 'Bad Request')
+    @auth_api.response(500,'Internal Server Error')
     @auth_api.doc(model='User', body=USER)
     def post(self):
         """
@@ -48,9 +45,9 @@ class RegisterUser(Resource):
         password = post_data.get('password')
 
         if not validate_email(email):
-            return abort(409, 'Invalid Email Address')
+            return abort(400, 'Invalid Email Address')
         if not fname or not lname:
-            return abort(409, "First and last name must be provided")
+            return abort(400, "First and last name must be provided")
 
         user = User(email=email, fname=fname, lname=lname, password=password)
 
@@ -62,13 +59,13 @@ class RegisterUser(Resource):
                 response = {
                     'status': 'success',
                     'message': 'Successfully Registered',
-                    'auth_token': auth_token
+                    'auth_token': auth_token.decode('utf-8')
                 }
                 response.update(user_data)
                 return response, 201
             else:
                 response = {'status': 'fail', 'message': 'User Exists'}
-                return response, 409
+                return response, 400
         except Exception as e:
             return abort(500, message='Error creating your account:{}'.format(e.message))
 
@@ -80,8 +77,8 @@ class AuthenticateUser(Resource):
     and password
     """
     @auth_api.response(201, 'Login Successful')
-    @auth_api.response(401, 'Failed to authenticate user')
-    @auth_api.response(409, 'User Data is invalid or User Exists')
+    @auth_api.response(400, 'Bad Request')
+    @auth_api.response(500, 'Internal server error')
     @auth_api.doc(model='User', body=USER)
     def post(self):
         """
@@ -92,7 +89,7 @@ class AuthenticateUser(Resource):
         password = post_data.get('password')
 
         if not validate_email(email):
-            return abort(409, 'Invalid Email Address')
+            return abort(400, 'Invalid Email Address')
 
         user = User.query.filter_by(email=email).first()
         try:
@@ -102,7 +99,7 @@ class AuthenticateUser(Resource):
                 response = {
                     'status': 'success',
                     'message': 'Login Successful',
-                    'auth_token': auth_token
+                    'auth_token': auth_token.decode('utf-8')
                 }
                 response.update(user_data)
                 return response, 201
