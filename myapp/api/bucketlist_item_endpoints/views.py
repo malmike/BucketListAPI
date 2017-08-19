@@ -88,7 +88,7 @@ class SingleBucketListItem(Resource):
     @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
-    @bucketlist_item_api.response(400, 'No existing bucketlist or bucketlist_item with the ids passed')
+    @bucketlist_item_api.response(400, 'Bad Request')
     @bucketlist_item_api.marshal_with(BUCKETLISTITEM)
     def put(self, bucketlist_id, item_id):
         """
@@ -120,7 +120,7 @@ class SingleBucketListItem(Resource):
     @bucketlist_item_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
-    @bucketlist_item_api.response(400, 'No existing bucketlist or bucketlist_item with the ids passed')
+    @bucketlist_item_api.response(400, 'Bad Request')
     def delete(self, bucketlist_id, item_id):
         """
         Handles delete requests to for bucketlist item

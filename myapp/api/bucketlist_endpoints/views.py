@@ -38,11 +38,8 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
-    @bucketlist_api.response(409, 'Bucketlist Exists')
-    @bucketlist_api.response(
-        500,
-        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
-    )
+    @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(500, 'Internal Server Error')
     @bucketlist_api.doc(model='Bucketlist', body=BUCKETLIST)
     def post(self):
         """
@@ -63,7 +60,7 @@ class BucketListEndPoint(Resource):
                 return response, 201
             else:
                 response = {'status': 'fail', 'message': 'Bucketlist Exists'}
-                return response, 409
+                return response, 400
         except Exception as e:
             return abort(500, message='Error creating your account:{}'.format(e.message))
 
@@ -71,7 +68,7 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
-    @bucketlist_api.response(400, 'User has no single bucketlist')
+    @bucketlist_api.response(400, 'Bad Request')
     @bucketlist_api.response(404, 'Pages cannot be negative')
     @bucketlist_api.expect(bucketlist_parser)
     def get(self):
@@ -129,7 +126,7 @@ class IndividualBucketList(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Retrieved Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(400, 'Bad Request')
     @bucketlist_api.marshal_with(BUCKETLIST)
     def get(self, bucketlist_id):
         """
@@ -148,7 +145,7 @@ class IndividualBucketList(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(400, 'Bad Request')
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
         """
@@ -167,7 +164,7 @@ class IndividualBucketList(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Deleted Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(400, 'Bad Request')
     def delete(self, bucketlist_id):
         """
         Retrieves existing bucketlists for specific user
