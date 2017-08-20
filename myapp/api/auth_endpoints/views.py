@@ -107,6 +107,6 @@ class AuthenticateUser(Resource):
                 'status': 'fail',
                 'message': 'Failed to authenticate user'
             }
-            return response, 401
+            return response, 400
         except Exception as e:
             return abort(500, 'Error logging in user:{}'.format(e.message))
