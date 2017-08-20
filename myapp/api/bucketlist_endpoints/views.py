@@ -7,6 +7,7 @@ from flask_sqlalchemy import Pagination
 from sqlalchemy import desc
 from myapp.models.bucketlist import BucketList
 from myapp.utilities.Utilities import auth
+from myapp.api.bucketlist_item_endpoints.views import BUCKETLISTITEM
 from instance.config import Config
 
 bucketlist_api = Namespace('bucketlist', description='Bucketlist Details')
@@ -21,7 +22,8 @@ BUCKETLIST = bucketlist_api.model(
             example="test_bucketlist"),
         'date_created': fields.DateTime(required=False, attribute='created'),
         'date_modified': fields.DateTime(required=False, attribute='modified'),
-        'created_by':fields.Integer(required=True, attribute='user_id')
+        'created_by':fields.Integer(required=True, attribute='user_id'),
+        'bucketlist_items': fields.Nested(BUCKETLISTITEM)
     }
 )
 
