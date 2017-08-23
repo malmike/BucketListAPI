@@ -77,7 +77,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         data = {"email": "nonexitant@email.com", "password": "test"}
         response = self.post_user_data(path=path, data=data)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], 'Failed to authenticate user')
 
 
@@ -90,5 +90,5 @@ class AuthEndPointsTests(BaseCase, TestCase):
         data = {"email": "test@test.com", "password": "wrong_pword"}
         response = self.post_user_data(path=path, data=data)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], 'Failed to authenticate user')
