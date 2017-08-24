@@ -5,7 +5,8 @@ from unittest import TestCase
 import json
 
 from tests.base_case import BaseCase
-from myapp.utilities.Utilities import validate_email, verify_token, strip_white_space
+from myapp.utilities.Utilities import validate_email, verify_token
+from myapp.utilities.Utilities import check_for_symbols, strip_white_space
 
 
 class UserTests(BaseCase, TestCase):
@@ -56,3 +57,22 @@ class UserTests(BaseCase, TestCase):
         false is returned
         """
         self.assertFalse(strip_white_space("    "))
+
+
+    def test_string_contain_symbols(self):
+        """
+        Tests that when a string containing symbols is passed to the strip white
+        space method, false is returned
+        """
+        self.assertFalse(strip_white_space("This is a bucket |!$t"))
+
+
+    def test_check_for_symbols(self):
+        """
+        Tests that if a string or sentence is passed containing symbols, the
+        return will be false and true if there are no symbols, and also returns 
+        true when the boolean argument passed is true
+        """
+        self.assertFalse(check_for_symbols("The bucket |!$t", False))
+        self.assertTrue(check_for_symbols("This bucket list", False))
+        self.assertTrue(check_for_symbols("john@doe.com", True))
