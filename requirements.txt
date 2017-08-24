@@ -25,6 +25,7 @@ jinja2==2.9.6             # via flask
 jsonschema==2.6.0         # via flask-restplus
 mako==1.0.7               # via alembic
 markupsafe==1.0           # via jinja2, mako
+nose==1.3.7
 psycopg2==2.7.1
 pycparser==2.18           # via cffi
 python-dateutil==2.6.1    # via alembic, aniso8601
