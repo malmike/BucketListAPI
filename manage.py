@@ -6,8 +6,9 @@ from os import getenv, path
 from sys import argv
 from unittest import TestLoader, TextTestRunner
 from coverage import Coverage
-from flask_script import Manager
+from flask_script import Manager, Command
 from flask_migrate import Migrate, MigrateCommand
+import nose
 
 from instance import ENVIRONMENTS
 from myapp import create_app, db
@@ -15,7 +16,7 @@ from myapp import create_app, db
 ENV = getenv('BUCKETLIST_ENV') or 'development'
 
 
-if len(argv) > 1 and argv[1] == "testing" or "test_coverage":
+if len(argv) > 1 and argv[1] == "nosetests":
     ENV = "testing"
 
 
@@ -46,33 +47,20 @@ def testing():
     return 1
 
 
-@MANAGER.command
-def test_coverage():
+@MANAGER.add_command
+class NoseCommand(Command):
     """
-    Calls run_tests method and runs the tests with coverage
+    Class enables running of tests using nose tests and basing on the
+    arguments passed will generate a coverage report and coverage xml file
     """
-    COV.start()
-    if run_tests():
-        COV.use_cache(True)
-        COV.stop()
-        COV.save()
-        print('Coverage report:')
-        COV.report()
-        basedir = path.abspath(path.dirname(__file__))
-        covdir = path.join(basedir, 'htmlcov')
-        COV.html_report(directory=covdir)
-        print('HTML version: file://%s/index.html' % covdir)
-        COV.xml_report()
-        return 0
-    return 1
+    name = 'nosetests'
+    capture_all_args = True
 
-
-def run_tests():
-    """
-    Method for running the tests
-    """
-    tests = TestLoader().discover('tests', pattern='test*.py')
-    return TextTestRunner(verbosity = 1).run(tests)
+    def run(self, arguments):
+        if not arguments:
+            nose.main(argv=['tests'])
+        else:
+            nose.main(argv=arguments)
 
 
 if __name__ == '__main__':
