@@ -31,7 +31,7 @@ class BucketListItemTests(BaseCase, TestCase):
         Method checks that add bucketlist item method actually adds a bucketlist
         item to the database
         """
-        bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
+        bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
         item = BucketListItem(
             name='test_item3',
             bucketlist_id=bucketlist.id,

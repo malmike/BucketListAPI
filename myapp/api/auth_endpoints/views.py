@@ -41,7 +41,7 @@ class RegisterUser(Resource):
         post_data = request.get_json()
         fname = strip_white_space(post_data.get('fname')) or None
         lname = strip_white_space(post_data.get('lname')) or None
-        email = strip_white_space(post_data.get('email')) or None
+        email = strip_white_space(post_data.get('email'), skip_check_symbols=True) or None
         password = strip_white_space(post_data.get('password')) or None
 
         if not validate_email(email):
@@ -87,7 +87,7 @@ class AuthenticateUser(Resource):
         Handles post requests for authentication of a user
         """
         post_data = request.get_json()
-        email = strip_white_space(post_data.get('email'))
+        email = strip_white_space(post_data.get('email'), skip_check_symbols=True)
         password = strip_white_space(post_data.get('password'))
 
         if not validate_email(email):

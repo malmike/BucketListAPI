@@ -16,7 +16,7 @@ BUCKETLISTITEM = bucketlist_item_api.model(
         'name': fields.String(
             required=True,
             description="Bucketlist Item Name",
-            example="test_bucketlist_item"),
+            example="test bucketlist item"),
         'date_created': fields.DateTime(required=False, attribute='created'),
         'date_modified': fields.DateTime(required=False, attribute='modified'),
         'bucketlist_id': fields.Integer(required=True),
@@ -61,7 +61,7 @@ class BucketListItemEndPoint(Resource):
         """
         post_data = request.get_json()
         name = strip_white_space(post_data.get('name'))
-        finished_by = strip_white_space(post_data.get('finished_by'))
+        finished_by = strip_white_space(post_data.get('finished_by'), skip_check_symbols=True)
         if not name or not finished_by:
             return abort(400, "Bucketlist item name and finished_by should be provided")
 

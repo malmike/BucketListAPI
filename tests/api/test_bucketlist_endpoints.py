@@ -22,7 +22,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         _pword = "test"
         user = User.query.filter_by(email=email).first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
-        response = self.add_bucketlist(email, _pword, 'test_bucketlist_name')
+        response = self.add_bucketlist(email, _pword, 'test bucketlist name')
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucketlist Added')
@@ -33,12 +33,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
     def test_fail_repeated_buckelist(self):
         """
         Method tests that there can not be more than one bucketlist added with the
-        same name. We will use one of the already existing bucketlist names 'test_bucketlist'
+        same name. We will use one of the already existing bucketlist names 'test bucketlist'
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
-        response = self.add_bucketlist("test@test.com", "test", 'test_bucketlist')
+        response = self.add_bucketlist("test@test.com", "test", 'test bucketlist')
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '400 BAD REQUEST')
         self.assertEqual(result['message'], 'Bucketlist Exists')
@@ -119,7 +119,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         Method tests the endpoint for put bucketlist i.e alter bucketlist data
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
-        data = {"name": "new_bucketlist_name"}
+        data = {"name": "new bucketlist name"}
         user = User.query.filter_by(email="test@test.com").first()
         bucketlist = BucketList.query.filter_by(id=1).first()
         name = bucketlist.name
@@ -135,7 +135,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         Method tests the endpoint for put bucketlist when an incorrect id is passed
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
-        data = {"name": "new_bucketlist_name"}
+        data = {"name": "new bucketlist name"}
         bucketlist = BucketList.query.filter_by(id=0).first()
         self.assertFalse(bucketlist)
         response = self.put_bucketlist("test@test.com", 'test', 0, data)

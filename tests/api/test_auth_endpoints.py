@@ -87,7 +87,7 @@ class AuthEndPointsTests(BaseCase, TestCase):
         is incorrect
         """
         path = '/api/v1/auth/login'
-        data = {"email": "test@test.com", "password": "wrong_pword"}
+        data = {"email": "test@test.com", "password": "wrongpassword"}
         response = self.post_user_data(path=path, data=data)
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 400)

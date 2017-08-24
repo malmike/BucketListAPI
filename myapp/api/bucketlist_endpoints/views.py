@@ -19,7 +19,7 @@ BUCKETLIST = bucketlist_api.model(
         'name': fields.String(
             required=True,
             description="Bucketlist Name",
-            example="test_bucketlist"),
+            example="test bucketlist"),
         'date_created': fields.DateTime(required=False, attribute='created'),
         'date_modified': fields.DateTime(required=False, attribute='modified'),
         'created_by':fields.Integer(required=True, attribute='user_id'),
