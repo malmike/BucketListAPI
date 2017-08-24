@@ -30,3 +30,11 @@ def verify_token(token=None):
         g.current_user = User.query.filter_by(id=user_id).first()
         return True
     return False
+
+def strip_white_space(text):
+    """
+    Removes white spaces off texts and string data
+    """
+    if isinstance(text, str) and not text.isspace():
+        return text.strip()
+    return False
