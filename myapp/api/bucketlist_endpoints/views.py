@@ -32,6 +32,9 @@ bucketlist_parser.add_argument('q', type=str, help='Search term for querying buc
 bucketlist_parser.add_argument('limit', type=str, help='Sets the limit for pargination', required=False)
 bucketlist_parser.add_argument('page', type=str)
 
+bucketlist_name_parser = bucketlist_api.parser()
+bucketlist_name_parser.add_argument('name', type=str, help='Bucketlist name', required=True)
+
 @bucketlist_api.route('', endpoint='bucketlist')
 class BucketListEndPoint(Resource):
     """
@@ -148,6 +151,7 @@ class IndividualBucketList(Resource):
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
     @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.expect(bucketlist_name_parser)
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
         """
