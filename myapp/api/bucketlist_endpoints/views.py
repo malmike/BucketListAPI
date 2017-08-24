@@ -6,7 +6,7 @@ from flask import request, g, url_for
 from flask_sqlalchemy import Pagination
 from sqlalchemy import desc
 from myapp.models.bucketlist import BucketList
-from myapp.utilities.Utilities import auth
+from myapp.utilities.Utilities import auth, strip_white_space
 from myapp.api.bucketlist_item_endpoints.views import BUCKETLISTITEM
 from instance.config import Config
 
@@ -51,7 +51,10 @@ class BucketListEndPoint(Resource):
         Handles adding of new bucketlists
         """
         post_data = request.get_json()
-        name = post_data.get('name')
+        name = strip_white_space(post_data.get('name'))
+
+        if not name:
+            return abort(400, "Bucket list name must be provided")
 
         bucketlist = BucketList(name=name, user_id=g.current_user.id)
 
@@ -158,7 +161,9 @@ class IndividualBucketList(Resource):
         Updates existing bucketlists for specific user
         """
         put_data = request.get_json()
-        name = put_data.get('name')
+        name = strip_white_space(put_data.get('name'))
+        if not name:
+            return abort(400, "Bucket list name must be provided")
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:
             bucketlist.name = name

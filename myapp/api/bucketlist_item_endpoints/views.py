@@ -5,7 +5,7 @@ from flask_restplus import Namespace, Resource, abort, fields
 from flask import request, g
 from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
-from myapp.utilities.Utilities import auth
+from myapp.utilities.Utilities import auth, strip_white_space
 
 bucketlist_item_api = Namespace('bucketlist', description='Bucketlist And Bucketlist Items')
 
@@ -24,6 +24,10 @@ BUCKETLISTITEM = bucketlist_item_api.model(
         'finished_by': fields.Date(required=True),
     }
 )
+
+bucketlist_item_parser = bucketlist_item_api.parser()
+bucketlist_item_parser.add_argument('name', type=str, help='Bucketlist name', required=False)
+bucketlist_item_parser.add_argument('completed', type=bool, help='Task completed', required=False)
 
 @bucketlist_item_api.route('/<int:bucketlist_id>/items/', endpoint='bucketlist_item')
 class BucketListItemEndPoint(Resource):
@@ -56,8 +60,11 @@ class BucketListItemEndPoint(Resource):
         Handles the adding bucketlist items
         """
         post_data = request.get_json()
-        name = post_data.get('name')
-        finished_by = post_data.get('finished_by')
+        name = strip_white_space(post_data.get('name'))
+        finished_by = strip_white_space(post_data.get('finished_by'))
+        if not name or not finished_by:
+            return abort(400, "Bucketlist item name and finished_by should be provided")
+
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         try:
             if bucketlist:
@@ -90,13 +97,17 @@ class SingleBucketListItem(Resource):
     @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
     @bucketlist_item_api.response(400, 'Bad Request')
     @bucketlist_item_api.marshal_with(BUCKETLISTITEM)
+    @bucketlist_item_api.expect(bucketlist_item_parser)
     def put(self, bucketlist_id, item_id):
         """
         Handles put requests to alter a single bucketlist item
         """
         put_data = request.get_json()
-        name = put_data.get('name') or None
+        name = strip_white_space(put_data.get('name')) or None
         completed = put_data.get('completed') or None
+
+        if not name or not completed:
+            return abort(400, 'No data sent for updating or inaccurate data provided')
 
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:

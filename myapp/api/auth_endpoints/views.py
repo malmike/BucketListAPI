@@ -7,7 +7,7 @@ from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g
 from re import search
 from myapp.models.user import User
-from myapp.utilities.Utilities import validate_email
+from myapp.utilities.Utilities import validate_email, strip_white_space
 
 auth_api = Namespace('auth', description='User authentication and registration')
 
@@ -39,17 +39,19 @@ class RegisterUser(Resource):
         Handles post requests for registration of a new user
         """
         post_data = request.get_json()
-        fname = post_data.get('fname') or None
-        lname = post_data.get('lname') or None
-        email = post_data.get('email')
-        password = post_data.get('password')
+        fname = strip_white_space(post_data.get('fname')) or None
+        lname = strip_white_space(post_data.get('lname')) or None
+        email = strip_white_space(post_data.get('email')) or None
+        password = strip_white_space(post_data.get('password')) or None
 
         if not validate_email(email):
             return abort(400, 'Invalid Email Address')
-        if not fname or not lname:
+        if not fname or not lname or not fname.isalpha() or not lname.isalpha():
             return abort(400, "First and last name must be provided")
+        if not password:
+            return abort(400, "Password must be provided")
 
-        user = User(email=email, fname=fname, lname=lname, password=password)
+        user = User(email=email, fname=fname.capitalize(), lname=lname.capitalize(), password=password)
 
         try:
             check = user.save_user()
@@ -85,11 +87,13 @@ class AuthenticateUser(Resource):
         Handles post requests for authentication of a user
         """
         post_data = request.get_json()
-        email = post_data.get('email')
-        password = post_data.get('password')
+        email = strip_white_space(post_data.get('email'))
+        password = strip_white_space(post_data.get('password'))
 
         if not validate_email(email):
             return abort(400, 'Invalid Email Address')
+        if not password:
+            return abort(400, 'Password is required')
 
         user = User.query.filter_by(email=email).first()
         try:
