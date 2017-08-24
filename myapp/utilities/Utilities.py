@@ -31,10 +31,26 @@ def verify_token(token=None):
         return True
     return False
 
-def strip_white_space(text):
+def strip_white_space(text, skip_check_symbols=False):
     """
     Removes white spaces off texts and string data
     """
-    if isinstance(text, str) and not text.isspace():
-        return text.strip()
-    return False
+    if not isinstance(text, str) and text.isspace():
+        return False
+    text = text.strip()
+    if not check_for_symbols(text, skip_check_symbols):
+        return False
+    return text
+
+def check_for_symbols(text, skip_check_symbols):
+    """
+    Checks if the text contains symbols
+    """
+    if skip_check_symbols:
+        return True
+    words = text.split(" ")
+    for word in words:
+        if not word.isalnum():
+            return False
+    return True
+
