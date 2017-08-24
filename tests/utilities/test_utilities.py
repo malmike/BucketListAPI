@@ -5,7 +5,7 @@ from unittest import TestCase
 import json
 
 from tests.base_case import BaseCase
-from myapp.utilities.Utilities import validate_email, verify_token
+from myapp.utilities.Utilities import validate_email, verify_token, strip_white_space
 
 
 class UserTests(BaseCase, TestCase):
@@ -40,3 +40,19 @@ class UserTests(BaseCase, TestCase):
         self.assertTrue(
             verify_token(result['auth_token'])
         )
+
+    
+    def test_strip_white_space(self):
+        """
+        Tests that white space is trimmed off string passed to strip white
+        space method
+        """
+        self.assertEqual(strip_white_space("  testing  "), "testing")
+    
+
+    def test_strip_white_space_return_false(self):
+        """
+        Tests that if only spaces are passed to the strip white space method
+        false is returned
+        """
+        self.assertFalse(strip_white_space("    "))
