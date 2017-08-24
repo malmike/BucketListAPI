@@ -8,10 +8,11 @@ from datetime import date
 import json
 
 from instance import ENVIRONMENTS
-from manage import APP, db
+from myapp import db, create_app
 from myapp.models.user import User
 from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
+from instance import ENVIRONMENTS
 
 
 class BaseCase(TestCase):
@@ -24,7 +25,7 @@ class BaseCase(TestCase):
         """
         Creates a flask instance for testing
         """
-        return APP
+        return create_app(ENVIRONMENTS.get('testing'))
 
 
     def setUp(self):
@@ -78,8 +79,8 @@ class BaseCase(TestCase):
         Method adds bucketlists to the database for testing
         """
         user = User.query.filter_by(email='test@test.com').first()
-        bucketlist = BucketList(user_id=user.id, name='test_bucketlist')
-        bucketlist2 = BucketList(user_id=user.id, name='test_bucketlist2')
+        bucketlist = BucketList(user_id=user.id, name='test bucketlist')
+        bucketlist2 = BucketList(user_id=user.id, name='test bucketlist2')
         db.session.add(bucketlist)
         db.session.add(bucketlist2)
         db.session.commit()
@@ -90,7 +91,7 @@ class BaseCase(TestCase):
         """
         Method adds bucketlists items to the database for testing
         """
-        bucketlist = BucketList.query.filter_by(name='test_bucketlist').first()
+        bucketlist = BucketList.query.filter_by(name='test bucketlist').first()
         item = BucketListItem(
             finished_by=date(2020, 8, 22),
             bucketlist_id=bucketlist.id,
