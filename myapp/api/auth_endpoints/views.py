@@ -7,7 +7,8 @@ from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g
 from re import search
 from myapp.models.user import User
-from myapp.utilities.Utilities import validate_email, strip_white_space
+from myapp.models.blacklist_token import BlackListToken
+from myapp.utilities.Utilities import validate_email, strip_white_space, auth
 
 auth_api = Namespace('auth', description='User authentication and registration')
 
@@ -69,7 +70,7 @@ class RegisterUser(Resource):
                 response = {'status': 'fail', 'message': 'User Exists'}
                 return response, 400
         except Exception as e:
-            return abort(500, 'Error creating your account:{}'.format(e.message))
+            return abort(500, 'Error creating your account:{}'.format(e))
 
 
 @auth_api.route('/login', endpoint='login')
@@ -113,4 +114,32 @@ class AuthenticateUser(Resource):
             }
             return response, 400
         except Exception as e:
-            return abort(500, 'Error logging in user:{}'.format(e.message))
+            return abort(500, 'Error logging in user:{}'.format(e))
+
+
+@auth_api.route('/logout', endpoint='logout')
+class Logout(Resource):
+    """
+    This method logs the user out of the system
+    """
+    @auth_api.header('x-access-token', 'Access Token', required=True)
+    @auth.login_required
+    @auth_api.response(201, 'Logout Successful')
+    def get(self):
+        """
+        Handles logout
+        """
+        try:
+            token = request.headers.get('x-access-token')
+            blacklist_token = BlackListToken(token=token)
+            blacklist_token.save()
+            g.current_user = None
+            response = {
+                'status': 'success',
+                'message': 'Logout Successful'
+            }
+            return response, 201
+        except Exception as e:
+            return abort(500, 'Error logging out user:{}'.format(e))
+
+    
