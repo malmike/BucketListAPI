@@ -47,8 +47,8 @@ class BucketListItemTests(BaseCase, TestCase):
 
     def test_repeat_bucketlist_item(self):
         """
-        Method checks that add bucketlist item method actually adds a bucketlist
-        item to the database
+        Method checks that add bucketlist item method actually fails to add a bucketlist
+        item to the database if the bucketlist exists
         """
         bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
         item = BucketListItem(
