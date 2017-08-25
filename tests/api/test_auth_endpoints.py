@@ -3,6 +3,7 @@ File contains tests for the authentication endpoints like user authentication,
 user registration, logout and user verification
 """
 from unittest import TestCase
+from myapp.models.blacklist_token import BlackListToken
 import json
 
 from tests.base_case import BaseCase
@@ -92,3 +93,40 @@ class AuthEndPointsTests(BaseCase, TestCase):
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], 'Failed to authenticate user')
+
+
+    def test_logout(self):
+        """
+        This method tests that the logout function works
+        """
+        path = '/api/v1/auth/login'
+        email = "test@test.com"
+        pword = "test"
+        data = {"email": email, "password": pword}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 201)
+        headers = self.authentication_headers(email=email, password=pword)
+        blacklist_no = BlackListToken.query.filter_by().count()
+        response = self.client.get(
+            '/api/v1/auth/logout',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        new_blacklist_no = BlackListToken.query.filter_by().count()
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(result['message'], 'Logout Successful')
+        self.assertNotEqual(blacklist_no, new_blacklist_no)
+
+        # TRY REACCESSING THE LOGOUT PATH
+        response = self.client.get(
+            '/api/v1/auth/logout',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
+        
+
