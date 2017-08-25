@@ -23,7 +23,8 @@ class BucketList(BaseModel):
         Method is used to verify that a bucketlist name exists in
         the database
         """
-        if BucketList.query.filter_by(user_id=user_id).filter(BucketList.name.ilike(name)).first():
+        bucketlist = BucketList.query.filter_by(user_id=user_id).filter(BucketList.name.ilike(name)).first()
+        if bucketlist:
             return True
         return False
 
