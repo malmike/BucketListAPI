@@ -19,7 +19,7 @@ class BucketListItemTests(BaseCase, TestCase):
         Method checks that a bucketlist item is added to the database
         """
         item = BucketListItem.query.filter_by(id=1).first()
-        self.assertEqual(item.name, "test_item", "Name not added")
+        self.assertEqual(item.name, "test item", "Name not added")
         self.assertEqual(item.bucketlist_id, 1, "User Id not added")
         self.assertTrue(isinstance(item.created, datetime))
         self.assertTrue(isinstance(item.modified, datetime))
@@ -33,7 +33,7 @@ class BucketListItemTests(BaseCase, TestCase):
         """
         bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
         item = BucketListItem(
-            name='test_item3',
+            name='test item3',
             bucketlist_id=bucketlist.id,
             finished_by=date(2020, 9, 22)
         )
@@ -43,6 +43,26 @@ class BucketListItemTests(BaseCase, TestCase):
             item.id,
             "BucketList Item doesnot contain id so has not been added to the db"
         )
+
+
+    def test_repeat_bucketlist_item(self):
+        """
+        Method checks that add bucketlist item method actually adds a bucketlist
+        item to the database
+        """
+        bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
+        item = BucketListItem(
+            name='test item',
+            bucketlist_id=bucketlist.id,
+            finished_by=date(2020, 9, 22)
+        )
+        check = item.save_bucketlist_item()
+        self.assertFalse(check, "Bucketlist item should not be added")
+        self.assertFalse(
+            item.id,
+            "BucketList Item doesnot contain id so has not been added to the db"
+        )
+
 
     def test_delete_bucketlist_item(self):
         """
