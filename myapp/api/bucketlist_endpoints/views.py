@@ -5,6 +5,7 @@ from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g, url_for
 from flask_sqlalchemy import Pagination
 from sqlalchemy import desc
+
 from myapp.models.bucketlist import BucketList
 from myapp.utilities.Utilities import auth, strip_white_space
 from myapp.api.bucketlist_item_endpoints.views import BUCKETLISTITEM
@@ -34,6 +35,16 @@ bucketlist_parser.add_argument('page', type=str)
 
 bucketlist_name_parser = bucketlist_api.parser()
 bucketlist_name_parser.add_argument('name', type=str, help='Bucketlist name', required=True)
+
+BUCKETLIST_NAME = bucketlist_api.model(
+    'bucketlist_name',
+    {
+        'name': fields.String(
+            required=True,
+            description="Bucketlist Name",
+            example="rename bucketlist")
+    }
+)
 
 @bucketlist_api.route('', endpoint='bucketlist')
 class BucketListEndPoint(Resource):
@@ -154,20 +165,24 @@ class IndividualBucketList(Resource):
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
     @bucketlist_api.response(400, 'Bad Request')
-    @bucketlist_api.expect(bucketlist_name_parser)
+    @bucketlist_api.doc(model='bucketlist_name', body=BUCKETLIST_NAME)
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
         """
         Updates existing bucketlists for specific user
         """
+        print(request)
         put_data = request.get_json()
         name = strip_white_space(put_data.get('name'))
         if not name:
             return abort(400, "Bucket list name must be provided")
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
-        if bucketlist:
+        check = BucketList.query.filter_by(user_id=g.current_user.id).filter(BucketList.name.ilike(name)).first()
+        if check:
+            return abort(409, "Bucket list item exists")
+        if bucketlist and not check:
             bucketlist.name = name
-            bucketlist.save_bucketlist()
+            bucketlist.add_data_set()
             return bucketlist, 200
         return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
