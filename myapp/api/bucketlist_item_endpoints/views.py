@@ -66,22 +66,21 @@ class BucketListItemEndPoint(Resource):
             return abort(400, "Bucketlist item name and finished_by should be provided")
 
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
-        try:
-            if bucketlist:
-                bucketlist_item = BucketListItem(
-                    name=name,
-                    finished_by=finished_by,
-                    bucketlist_id = bucketlist.id
-                )
-                bucketlist_item.save_bucketlist_item()
+        if bucketlist:
+            bucketlist_item = BucketListItem(
+                name=name,
+                finished_by=finished_by,
+                bucketlist_id = bucketlist.id
+            )
+            if bucketlist_item.save_bucketlist_item():
                 response = {
                     'status': 'success',
                     'message': 'Bucket list item added'
                 }
                 return response, 201
-            abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
-        except Exception as e:
-            return abort(500, message='Error adding bucketlist item:{}'.format(e.message))
+            return abort(400, 'Bucketlist Item Exists')
+        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+    
 
 
 @bucketlist_item_api.route(
