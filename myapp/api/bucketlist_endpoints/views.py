@@ -177,13 +177,10 @@ class IndividualBucketList(Resource):
         if not name:
             return abort(400, "Bucket list name must be provided")
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
-        check = BucketList.query.filter_by(user_id=g.current_user.id).filter(BucketList.name.ilike(name)).first()
-        if check:
-            return abort(409, "Bucket list item exists")
-        if bucketlist and not check:
-            bucketlist.name = name
-            bucketlist.add_data_set()
-            return bucketlist, 200
+        if bucketlist:
+            if bucketlist.save_bucketlist(name):
+                return bucketlist, 200
+            return abort(409, "Bucketlist exists")
         return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
