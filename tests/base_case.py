@@ -95,12 +95,12 @@ class BaseCase(TestCase):
         item = BucketListItem(
             finished_by=date(2020, 8, 22),
             bucketlist_id=bucketlist.id,
-            name='test_item'
+            name='test item'
         )
         item2 = BucketListItem(
             finished_by=date(2020, 9, 22),
             bucketlist_id=bucketlist.id,
-            name='test_item2'
+            name='test item2'
         )
         db.session.add(item)
         db.session.add(item2)
