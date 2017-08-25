@@ -8,6 +8,20 @@
 
 This is an API for a bucket list designed using flask framework for python
 
+### Set up
+You should have [git](https://git-scm.com/), [python](https://docs.python.org/), [pip](https://pypi.python.org/pypi/pip), [postgresql](https://www.postgresql.org/docs/current/static/tutorial.html), [virtualenv](https://virtualenv.pypa.io/en/stable/) installed
+##### These instractions are specific to a linux or unix based machine
+1. Open your terminal
+2. Clone the project using `git clone https://github.com/malmike/BucketlistAPI`
+3. Run `createdb bucketlist_api_dev` and `create test_db`
+4. Change to the project directory using `cd BucketlistAPI`
+5. Create a virtual environment for the project using the command `virtualenv .venv` and start it using `source .venv/bin/activate` and using the command `deactivate` to stop the virtual environment
+6. Install packages using `pip install -r requirements.txt`
+7. You can run tests using the command `nosetests tests --with-coverage --cover-erase --cover-package="myapp" --cover-package="instance" --cover-xml`
+8. To launch the application you should first apply migrations in order to create the database whose process is shown below
+9. Run the application using `python manage.py runserver`
+10. You can access the api documentation at `http://localhost:5000/api/v1`
+
 ### Command for creation of the database and applying migrations to it
 $ python manage.py db init
 $ python manage.py db migrate
@@ -17,17 +31,18 @@ $ python manage.py db --help
 
 ### Specifications for the API are shown below
 
-| EndPoint | Functionality |
-| -------- | ------------- |
-| [ POST /auth/login ](#) | Logs a user in |
-| [ POST /auth/register ](#) | Register a user |
-| [ POST /bucketlists/ ](#) | Create a new bucket list |
-| [ GET /bucketlists/ ](#) | List all the created bucket lists |
-| [ GET /bucketlists/\<id> ](#) | Get single bucket list |
-| [ PUT /bucketlists/\<id> ](#) | Update this bucket list |
-| [ DELETE /bucketlists/\<id> ](#) | Delete this single bucket list |
-| [ POST /bucketlists/\<id>/items/ ](#) | Create a new item in bucket list |
-| [ PUT /bucketlists/\<id>/items/<item_id> ](#) | Update a bucket list item |
-| [ DELETE /bucketlists/\<id>/items/<item_id> ](#) | Delete an item in a bucket list |
-| [ GET /bucketlists?limit=\<number> ](#) | Gets a number of bucket lists relative to the value passed in number. Maximum records is 100 |
-| [ GET /bucketlists?q=\<bucketlist_name> ](#) | Search for bucket list with the same name as that passed in bucketlist_name |
+| EndPoint | Functionality | Public Access |
+| -------- | ------------- | ------------- |
+| [ POST /auth/login ](#) | Logs a user in | FALSE |
+| [ POST /auth/register ](#) | Register a user | FALSE |
+| [ POST /auth/logout ](#) | Logs a user out | TRUE |
+| [ POST /bucketlists/ ](#) | Create a new bucket list | TRUE |
+| [ GET /bucketlists/ ](#) | List all the created bucket lists | TRUE |
+| [ GET /bucketlists/\<id> ](#) | Get single bucket list | TRUE |
+| [ PUT /bucketlists/\<id> ](#) | Update this bucket list | TRUE |
+| [ DELETE /bucketlists/\<id> ](#) | Delete this single bucket list | TRUE |
+| [ POST /bucketlists/\<id>/items/ ](#) | Create a new item in bucket list | TRUE |
+| [ PUT /bucketlists/\<id>/items/<item_id> ](#) | Update a bucket list item | TRUE |
+| [ DELETE /bucketlists/\<id>/items/<item_id> ](#) | Delete an item in a bucket list | TRUE |
+| [ GET /bucketlists?limit=\<number> ](#) | Gets a number of bucket lists relative to the value passed in number. Maximum records is 100 | TRUE |
+| [ GET /bucketlists?q=\<bucketlist_name> ](#) | Search for bucket list with the same name as that passed in bucketlist_name | TRUE |
