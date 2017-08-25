@@ -10,7 +10,7 @@ class BucketList(BaseModel):
     """
     Class used as a representation of the bucketlist model
     """
-    name = db.Column(db.String(150), index=True, nullable=False)
+    name = db.Column(db.String(150), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
     bucketlist_items = db.relationship(
@@ -18,13 +18,12 @@ class BucketList(BaseModel):
     )
 
 
-    @staticmethod
-    def __item_exists(value):
+    def __item_exists(self, name, user_id):
         """
         Method is used to verify that a bucketlist name exists in
         the database
         """
-        if BucketList.query.filter_by(name=value).first():
+        if BucketList.query.filter_by(user_id=user_id).filter(BucketList.name.ilike(name)).first():
             return True
         return False
 
@@ -33,7 +32,7 @@ class BucketList(BaseModel):
         """
         Method is used to add a bucketlist to the database
         """
-        if self.__item_exists(self.name):
+        if self.__item_exists(self.name, self.user_id):
             return False
         self.add_data_set()
         return True
@@ -43,7 +42,7 @@ class BucketList(BaseModel):
         """
         Method is used to add a bucketlist to the database
         """
-        if not self.__item_exists(self.name):
+        if not self.__item_exists(self.name, self.user_id):
             return False
         self.delete_data_set()
         return True
