@@ -46,12 +46,29 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         user = User.query.filter_by(email=email).first()
         bucketlist = BucketList.query.filter_by(user_id=user.id, name="test bucketlist").first()
         item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
-        response = self.add_bucketlist_item(email, _pword, bucketlist.id)
+        response = self.add_bucketlist_item(email, _pword, bucketlist.id, "bucketlist item name")
         result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(result['message'], 'Bucket list item added')
         new_item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
         self.assertLess(item_no, new_item_no)
+
+
+    def test_fail_repeated_buckelist_item(self):
+        """
+        Method tests that there can not be more than one bucketlist item added with the
+        same name. We will use one of the already existing bucketlist names 'test item'
+        For the user we will login using an existing user email:'test@test.com', password: 'test'
+        """
+        user = User.query.filter_by(email="test@test.com").first()
+        bucketlist = BucketList.query.filter_by(user_id=user.id, name="test bucketlist").first()
+        item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
+        response = self.add_bucketlist_item("test@test.com", "test", bucketlist.id, "test item")
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(result['message'], 'Bucketlist Item Exists')
+        new_item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
+        self.assertEqual(item_no, new_item_no)
 
 
     def test_put_bucketlist_item(self):
@@ -140,7 +157,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         )
 
 
-    def add_bucketlist_item(self, email, password, buckelist_id):
+    def add_bucketlist_item(self, email, password, buckelist_id, item_name):
         """
         Method is used to send request to the api to add a bucketlist for testing
         """
@@ -148,7 +165,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         headers = self.authentication_headers(email=email, password=password)
         return self.client.post(
             '/api/v1/bucketlist/{}/items/'.format(buckelist_id),
-            data=json.dumps({"name": "bucketlist item name", "finished_by": test_date}),
+            data=json.dumps({"name": item_name, "finished_by": test_date}),
             content_type="application/json",
             headers=headers,
             follow_redirects=True
