@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 
 from instance.config import Config
 from .base_model import BaseModel, db
+from .blacklist_token import BlackListToken
 from .bucketlist import BucketList
 from re import search
 
@@ -95,6 +96,8 @@ class User(BaseModel):
         """
         Method is used to verify authentication token
         """
+        if BlackListToken.check_blacklist(token):
+            return False
         serializer = Serializer(Config.SECRET_KEY)
         try:
             data = serializer.loads(token)
