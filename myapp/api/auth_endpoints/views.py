@@ -3,9 +3,11 @@ This file contains the endpoints for authentication
 i.e user registration, user authentication, user verification
 and logout
 """
+from re import search
+
 from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g
-from re import search
+
 from myapp.models.user import User
 from myapp.models.blacklist_token import BlackListToken
 from myapp.utilities.Utilities import validate_email, strip_white_space, auth
@@ -21,7 +23,7 @@ USER = auth_api.model(
         'password':fields.String(
             required=True,
             description="User's Password",
-            example="test_password"
+            example="testpassword"
         )
     }
 )
