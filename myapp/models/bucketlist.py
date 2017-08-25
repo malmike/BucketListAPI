@@ -29,12 +29,15 @@ class BucketList(BaseModel):
         return False
 
 
-    def save_bucketlist(self):
+    def save_bucketlist(self, name=None):
         """
         Method is used to add a bucketlist to the database
         """
-        if self.__item_exists(self.name, self.user_id):
+        if not name:
+            name = self.name
+        if self.__item_exists(name, self.user_id):
             return False
+        self.name = name
         self.add_data_set()
         return True
 
