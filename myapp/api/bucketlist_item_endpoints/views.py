@@ -20,14 +20,19 @@ BUCKETLISTITEM = bucketlist_item_api.model(
         'date_created': fields.DateTime(required=False, attribute='created'),
         'date_modified': fields.DateTime(required=False, attribute='modified'),
         'bucketlist_id': fields.Integer(required=True),
-        'completed': fields.Boolean(),
+        'completed': fields.Boolean(default=False),
         'finished_by': fields.Date(required=True),
     }
 )
 
-bucketlist_item_parser = bucketlist_item_api.parser()
-bucketlist_item_parser.add_argument('name', type=str, help='Bucketlist name', required=False)
-bucketlist_item_parser.add_argument('completed', type=bool, help='Task completed', required=False)
+UPDATE_ITEM = bucketlist_item_api.model(
+    'update_item',{
+        'name': fields.String(description='Bucketlist Item name', example='new item name', required=False),
+        'completed': fields.String(
+            default="false", description="Takes string values `true` or `false`", required=True
+        )
+    }
+)
 
 @bucketlist_item_api.route('/<int:bucketlist_id>/items/', endpoint='bucketlist_item')
 class BucketListItemEndPoint(Resource):
@@ -96,16 +101,26 @@ class SingleBucketListItem(Resource):
     @bucketlist_item_api.response(200, 'Successfully Updated Bucketlist')
     @bucketlist_item_api.response(400, 'Bad Request')
     @bucketlist_item_api.marshal_with(BUCKETLISTITEM)
-    @bucketlist_item_api.expect(bucketlist_item_parser)
+    @bucketlist_item_api.doc(model='update_item', body=UPDATE_ITEM)
     def put(self, bucketlist_id, item_id):
         """
         Handles put requests to alter a single bucketlist item
         """
         put_data = request.get_json()
-        name = strip_white_space(put_data.get('name')) or None
+        name = strip_white_space(put_data.get('name') or '') or None
         completed = put_data.get('completed') or None
+        
+        if completed is not None and isinstance(completed, str):
+            completed = completed.strip()
+            completed = completed.capitalize()
 
-        if not name or not completed:
+        test_completed = completed is None or not completed.isalnum()
+        verify_completed = completed == 'True' or completed == 'False'
+
+        if completed is not None and not verify_completed:
+            return abort(400, 'Completed must either be true or false')
+
+        if not name and test_completed:
             return abort(400, 'No data sent for updating or inaccurate data provided')
 
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
@@ -115,13 +130,12 @@ class SingleBucketListItem(Resource):
                 id=item_id
             ).first()
             if item:
-                try:
-                    item.name = name if name is not None else item.name
-                    item.completed = completed if completed is not None else item.completed
-                    item.save_bucketlist_item()
+                if item.save_bucketlist_item(
+                    name = name, 
+                    completed = completed
+                ):
                     return item, 200
-                except Exception as e:
-                    return abort(500, message='Error updating bucketlist item:{}'.format(e.message))
+                return abort(409, "Bucket list item already exists")
             return abort(400, 'Bucketlist Item with ID {} not found in the database'.format(item_id))
 
         return abort(400, 'Bucketlist with ID {} not found in the database'.format(item_id))
