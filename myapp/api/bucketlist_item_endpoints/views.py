@@ -25,6 +25,17 @@ BUCKETLISTITEM = bucketlist_item_api.model(
     }
 )
 
+ADD_BUCKETLISTITEM = bucketlist_item_api.model(
+    'addBucketlistItem',
+    {
+        'name': fields.String(
+            required=True,
+            description="Bucketlist Item Name",
+            example="test bucketlist item"),
+        'finished_by': fields.Date(required=True)
+    }
+)
+
 UPDATE_ITEM = bucketlist_item_api.model(
     'update_item',{
         'name': fields.String(description='Bucketlist Item name', example='new item name', required=False),
@@ -59,7 +70,7 @@ class BucketListItemEndPoint(Resource):
     @bucketlist_item_api.response(200, 'Successful Added Bucketlist item')
     @bucketlist_item_api.response(400, 'No existing bucketlist with the id passes')
     @bucketlist_item_api.response(500, 'Internal Server Error')
-    @bucketlist_item_api.doc(model='BucketlistItem', body=BUCKETLISTITEM)
+    @bucketlist_item_api.doc(model='addBucketlistItem', body=ADD_BUCKETLISTITEM)
     def post(self, bucketlist_id):
         """
         Handles the adding bucketlist items
