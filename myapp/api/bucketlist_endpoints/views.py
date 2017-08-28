@@ -28,6 +28,16 @@ BUCKETLIST = bucketlist_api.model(
     }
 )
 
+ADD_BUCKETLIST = bucketlist_api.model(
+    'addBucketlist',
+    {
+        'name': fields.String(
+            required=True,
+            description="Bucketlist Name",
+            example="test bucketlist")
+    }
+)
+
 bucketlist_parser = bucketlist_api.parser()
 bucketlist_parser.add_argument('q', type=str, help='Search term for querying bucketlist', required=False)
 bucketlist_parser.add_argument('limit', type=str, help='Sets the limit for pargination', required=False)
@@ -56,7 +66,7 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
     @bucketlist_api.response(400, 'Bad Request')
     @bucketlist_api.response(500, 'Internal Server Error')
-    @bucketlist_api.doc(model='Bucketlist', body=BUCKETLIST)
+    @bucketlist_api.doc(model='addBucketlist', body=ADD_BUCKETLIST)
     def post(self):
         """
         Handles adding of new bucketlists
