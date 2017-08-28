@@ -65,7 +65,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
         response = self.add_bucketlist_item("test@test.com", "test", bucketlist.id, "test item")
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '409 CONFLICT')
         self.assertEqual(result['message'], 'Bucketlist Item Exists')
         new_item_no = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id).count()
         self.assertEqual(item_no, new_item_no)
@@ -87,7 +87,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         response = self.put_bucketlist_item(email, _pword, bucketlist.id, 1, data)
         result = json.loads(response.data.decode('utf-8'))
         item2 = BucketListItem.query.filter_by(bucketlist_id=bucketlist.id, id=1).first()
-        self.assertEqual(response.status, '200 OK')
+        self.assertEqual(response.status, '201 CREATED')
         self.assertEqual(item2.name, "bucketlist item name")
         self.assertTrue(item2.completed)
 
@@ -107,10 +107,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
 
         response = self.put_bucketlist_item(email, _pword, bucketlist.id, 0, data)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '404 NOT FOUND')
         self.assertEqual(
             result['message'],
-            'Bucketlist Item with ID {} not found in the database'.format(0)
+            'Bucketlist Item with ID {} not found in the database. You have requested this URI '\
+            '[/api/v1/bucketlist/1/items/0] but did you mean /api/v1/bucketlist/<int:bucketlist_id>/items/'\
+            ' or /api/v1/bucketlist/<int:bucketlist_id> or /api/v1/bucketlist ?'.format(0)
         )
 
 
@@ -150,10 +152,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
 
         response = self.delete_bucketlist_item(email, _pword, bucketlist.id, 0)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '404 NOT FOUND')
         self.assertEqual(
             result['message'],
-            'Bucketlist Item with ID {} not found in the database'.format(0)
+            'Bucketlist Item with ID {} not found in the database. You have requested this URI '\
+            '[/api/v1/bucketlist/1/items/0] but did you mean /api/v1/bucketlist/<int:bucketlist_id>/items/'\
+            ' or /api/v1/bucketlist/<int:bucketlist_id> or /api/v1/bucketlist ?'.format(0)
         )
 
 
