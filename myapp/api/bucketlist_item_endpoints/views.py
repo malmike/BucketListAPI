@@ -122,15 +122,12 @@ class SingleBucketListItem(Resource):
         """
         put_data = request.get_json()
         name = strip_white_space(put_data.get('name') or '') or None
-        completed = put_data.get('completed') or None
-        
+        completed = str(put_data.get('completed')) or None
         if completed is not None and isinstance(completed, str):
             completed = completed.strip()
             completed = completed.capitalize()
-
         test_completed = completed is None or not completed.isalnum()
         verify_completed = completed == 'True' or completed == 'False'
-
         if completed is not None and not verify_completed:
             return abort(400, 'Completed must either be true or false')
 
