@@ -47,6 +47,7 @@ class RegisterUser(Resource):
     """
     @auth_api.response(201, 'Successful User Registration')
     @auth_api.response(400, 'Bad Request')
+    @auth_api.response(409, 'User Exists')
     @auth_api.response(500,'Internal Server Error')
     @auth_api.doc(model='User', body=USER)
     def post(self):
@@ -82,7 +83,7 @@ class RegisterUser(Resource):
                 return response, 201
             else:
                 response = {'status': 'fail', 'message': 'User Exists'}
-                return response, 400
+                return response, 409
         except Exception as e:
             return abort(500, 'Error creating your account:{}'.format(e))
 
@@ -95,6 +96,7 @@ class AuthenticateUser(Resource):
     """
     @auth_api.response(201, 'Login Successful')
     @auth_api.response(400, 'Bad Request')
+    @auth_api.response(401, 'Failed to authenticate user')
     @auth_api.response(500, 'Internal Server Error')
     @auth_api.doc(model='login', body=LOGIN)
     def post(self):
@@ -126,7 +128,7 @@ class AuthenticateUser(Resource):
                 'status': 'fail',
                 'message': 'Failed to authenticate user'
             }
-            return response, 400
+            return response, 401
         except Exception as e:
             return abort(500, 'Error logging in user:{}'.format(e))
 
