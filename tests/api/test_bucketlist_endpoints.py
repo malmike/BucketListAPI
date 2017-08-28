@@ -40,13 +40,13 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         response = self.add_bucketlist("test@test.com", "test", 'test bucketlist')
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '409 CONFLICT')
         self.assertEqual(result['message'], 'Bucketlist Exists')
         new_bucketlist_no = BucketList.query.filter_by(user_id=user.id).count()
         self.assertEqual(bucketlist_no, new_bucketlist_no)
 
 
-    def test_get_bucketlists(self):
+    def test_get_all_bucketlists(self):
         """
         Method test the endpoint for getting bucketlists
         For the user we will login using an existing user email:'test@test.com', password: 'test'
@@ -93,10 +93,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(bucketlist)
         response = self.get_bucketlist(email, _pword, 0)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '404 NOT FOUND')
         self.assertEqual(
             result['message'],
-            'Bucketlist with ID {} not found in the database'.format(0)
+            'Bucketlist with ID {} not found in the database. You have requested this URI [/api/v1/bucketlist/0]'\
+            ' but did you mean /api/v1/bucketlist/<int:bucketlist_id> or /api/v1/bucketlist or /api/v1/bucketlist/'\
+            '<int:bucketlist_id>/items/ ?'.format(0)
         )
 
 
@@ -140,10 +142,12 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         self.assertFalse(bucketlist)
         response = self.put_bucketlist("test@test.com", 'test', 0, data)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '404 NOT FOUND')
         self.assertEqual(
             result['message'],
-            'Bucketlist with ID {} not found in the database'.format(0)
+            'Bucketlist with ID {} not found in the database. You have requested this URI [/api/v1/bucketlist/0]'\
+            ' but did you mean /api/v1/bucketlist/<int:bucketlist_id> or /api/v1/bucketlist or /api/v1/bucketlist/'\
+            '<int:bucketlist_id>/items/ ?'.format(0)
         )
 
 
@@ -165,15 +169,17 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
 
     def test_delete_bucketlist_wrong_id(self):
         """
-        Tests the endpoint for delete bucketlist return error code 400 when wrong id is passed
+        Tests the endpoint for delete bucketlist return error code 404 when wrong id is passed
         For the user we will login using an existing user email:'test@test.com', password: 'test'
         """
         response = self.delete_bucketlist("test@test.com", 'test', 0)
         result = json.loads(response.data.decode('utf-8'))
-        self.assertEqual(response.status, '400 BAD REQUEST')
+        self.assertEqual(response.status, '404 NOT FOUND')
         self.assertEqual(
             result['message'],
-            'Bucketlist with ID {} not found in the database'.format(0)
+            'Bucketlist with ID {} not found in the database. You have requested this URI [/api/v1/bucketlist/0]'\
+            ' but did you mean /api/v1/bucketlist/<int:bucketlist_id> or /api/v1/bucketlist or /api/v1/bucketlist/'\
+            '<int:bucketlist_id>/items/ ?'.format(0)
         )
 
 

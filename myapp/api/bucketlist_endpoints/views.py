@@ -65,6 +65,7 @@ class BucketListEndPoint(Resource):
     @auth.login_required
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
     @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(409, 'Bucketlist Exists')
     @bucketlist_api.response(500, 'Internal Server Error')
     @bucketlist_api.doc(model='addBucketlist', body=ADD_BUCKETLIST)
     def post(self):
@@ -89,7 +90,7 @@ class BucketListEndPoint(Resource):
                 return response, 201
             else:
                 response = {'status': 'fail', 'message': 'Bucketlist Exists'}
-                return response, 400
+                return response, 409
         except Exception as e:
             return abort(500, message='Error creating your account:{}'.format(e.message))
 
@@ -97,8 +98,7 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
-    @bucketlist_api.response(400, 'Bad Request')
-    @bucketlist_api.response(404, 'Pages cannot be negative')
+    @bucketlist_api.response(404, 'Not Found')
     @bucketlist_api.expect(bucketlist_parser)
     def get(self):
         """
@@ -142,9 +142,9 @@ class BucketListEndPoint(Resource):
                 pages['next_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page+1)
 
             result.update(pages)
-            return result
+            return result, 200
 
-        return abort(400, 'User has no single bucketlist')
+        return abort(404, 'User has no single bucketlist')
 
 
 @bucketlist_api.route('/<int:bucketlist_id>', endpoint='individual_bucketlist')
@@ -155,7 +155,7 @@ class IndividualBucketList(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Retrieved Bucketlist')
-    @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(404, 'Not Found')
     @bucketlist_api.marshal_with(BUCKETLIST)
     def get(self, bucketlist_id):
         """
@@ -167,14 +167,16 @@ class IndividualBucketList(Resource):
             None
         )
         if _bucketlist:
-            return _bucketlist
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+            return _bucketlist, 200
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
-    @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
+    @bucketlist_api.response(201, 'Successfully Updated Bucketlist')
     @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(404, 'Not Found')
+    @bucketlist_api.response(409, 'Item already exists')
     @bucketlist_api.doc(model='bucketlist_name', body=BUCKETLIST_NAME)
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
@@ -189,15 +191,15 @@ class IndividualBucketList(Resource):
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:
             if bucketlist.save_bucketlist(name):
-                return bucketlist, 200
+                return bucketlist, 201
             return abort(409, "Bucketlist exists")
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Deleted Bucketlist')
-    @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(404, 'Not Found')
     def delete(self, bucketlist_id):
         """
         Retrieves existing bucketlists for specific user
@@ -210,4 +212,4 @@ class IndividualBucketList(Resource):
                 'message': 'Bucketlist with ID {} deleted'.format(bucketlist_id)
             }
             return response, 200
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
