@@ -5,8 +5,10 @@ from flask_restplus import Namespace, Resource, abort, fields, marshal
 from flask import request, g, url_for
 from flask_sqlalchemy import Pagination
 from sqlalchemy import desc
+
 from myapp.models.bucketlist import BucketList
-from myapp.utilities.Utilities import auth
+from myapp.utilities.Utilities import auth, strip_white_space
+from myapp.api.bucketlist_item_endpoints.views import BUCKETLISTITEM
 from instance.config import Config
 
 bucketlist_api = Namespace('bucketlist', description='Bucketlist Details')
@@ -14,13 +16,25 @@ bucketlist_api = Namespace('bucketlist', description='Bucketlist Details')
 BUCKETLIST = bucketlist_api.model(
     'Bucketlist',
     {
+        'id':fields.Integer(),
         'name': fields.String(
             required=True,
             description="Bucketlist Name",
-            example="test_bucketlist"),
+            example="test bucketlist"),
         'date_created': fields.DateTime(required=False, attribute='created'),
         'date_modified': fields.DateTime(required=False, attribute='modified'),
-        'created_by':fields.Integer(required=True, attribute='user_id')
+        'created_by':fields.Integer(required=True, attribute='user_id'),
+        'bucketlist_items': fields.Nested(BUCKETLISTITEM)
+    }
+)
+
+ADD_BUCKETLIST = bucketlist_api.model(
+    'addBucketlist',
+    {
+        'name': fields.String(
+            required=True,
+            description="Bucketlist Name",
+            example="test bucketlist")
     }
 )
 
@@ -28,6 +42,19 @@ bucketlist_parser = bucketlist_api.parser()
 bucketlist_parser.add_argument('q', type=str, help='Search term for querying bucketlist', required=False)
 bucketlist_parser.add_argument('limit', type=str, help='Sets the limit for pargination', required=False)
 bucketlist_parser.add_argument('page', type=str)
+
+bucketlist_name_parser = bucketlist_api.parser()
+bucketlist_name_parser.add_argument('name', type=str, help='Bucketlist name', required=True)
+
+BUCKETLIST_NAME = bucketlist_api.model(
+    'bucketlist_name',
+    {
+        'name': fields.String(
+            required=True,
+            description="Bucketlist Name",
+            example="rename bucketlist")
+    }
+)
 
 @bucketlist_api.route('', endpoint='bucketlist')
 class BucketListEndPoint(Resource):
@@ -37,18 +64,19 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(201, 'Successful Bucketlist Added')
+    @bucketlist_api.response(400, 'Bad Request')
     @bucketlist_api.response(409, 'Bucketlist Exists')
-    @bucketlist_api.response(
-        500,
-        'Server encountered an unexpected condition that prevented it from fulfilling the request.'
-    )
-    @bucketlist_api.doc(model='Bucketlist', body=BUCKETLIST)
+    @bucketlist_api.response(500, 'Internal Server Error')
+    @bucketlist_api.doc(model='addBucketlist', body=ADD_BUCKETLIST)
     def post(self):
         """
         Handles adding of new bucketlists
         """
         post_data = request.get_json()
-        name = post_data.get('name')
+        name = strip_white_space(post_data.get('name'))
+
+        if not name:
+            return abort(400, "Bucket list name must be provided")
 
         bucketlist = BucketList(name=name, user_id=g.current_user.id)
 
@@ -70,8 +98,7 @@ class BucketListEndPoint(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successful Retreival of bucketlists')
-    @bucketlist_api.response(400, 'User has no single bucketlist')
-    @bucketlist_api.response(404, 'Pages cannot be negative')
+    @bucketlist_api.response(404, 'Not Found')
     @bucketlist_api.expect(bucketlist_parser)
     def get(self):
         """
@@ -115,9 +142,9 @@ class BucketListEndPoint(Resource):
                 pages['next_page'] = url_for('api.bucketlist')+'?limit={}&page={}'.format(page_limit, page+1)
 
             result.update(pages)
-            return result
+            return result, 200
 
-        return abort(400, 'User has no single bucketlist')
+        return abort(404, 'User has no single bucketlist')
 
 
 @bucketlist_api.route('/<int:bucketlist_id>', endpoint='individual_bucketlist')
@@ -128,7 +155,7 @@ class IndividualBucketList(Resource):
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Retrieved Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(404, 'Not Found')
     @bucketlist_api.marshal_with(BUCKETLIST)
     def get(self, bucketlist_id):
         """
@@ -140,33 +167,39 @@ class IndividualBucketList(Resource):
             None
         )
         if _bucketlist:
-            return _bucketlist
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+            return _bucketlist, 200
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
-    @bucketlist_api.response(200, 'Successfully Updated Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(201, 'Successfully Updated Bucketlist')
+    @bucketlist_api.response(400, 'Bad Request')
+    @bucketlist_api.response(404, 'Not Found')
+    @bucketlist_api.response(409, 'Item already exists')
+    @bucketlist_api.doc(model='bucketlist_name', body=BUCKETLIST_NAME)
     @bucketlist_api.marshal_with(BUCKETLIST)
     def put(self, bucketlist_id):
         """
         Updates existing bucketlists for specific user
         """
+        print(request)
         put_data = request.get_json()
-        name = put_data.get('name')
+        name = strip_white_space(put_data.get('name'))
+        if not name:
+            return abort(400, "Bucket list name must be provided")
         bucketlist = BucketList.query.filter_by(user_id=g.current_user.id, id=bucketlist_id).first()
         if bucketlist:
-            bucketlist.name = name
-            bucketlist.save_bucketlist()
-            return bucketlist, 200
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+            if bucketlist.save_bucketlist(name):
+                return bucketlist, 201
+            return abort(409, "Bucketlist exists")
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
 
 
     @bucketlist_api.header('x-access-token', 'Access Token', required=True)
     @auth.login_required
     @bucketlist_api.response(200, 'Successfully Deleted Bucketlist')
-    @bucketlist_api.response(400, 'No existing bucketlist with the id passes')
+    @bucketlist_api.response(404, 'Not Found')
     def delete(self, bucketlist_id):
         """
         Retrieves existing bucketlists for specific user
@@ -179,4 +212,4 @@ class IndividualBucketList(Resource):
                 'message': 'Bucketlist with ID {} deleted'.format(bucketlist_id)
             }
             return response, 200
-        return abort(400, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
+        return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))

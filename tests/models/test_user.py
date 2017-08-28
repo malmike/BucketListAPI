@@ -59,7 +59,7 @@ class UserTests(BaseCase, TestCase):
         to the database
         """
         _pword = "test"
-        user = User(email='test@adduser.com', password=_pword)
+        user = User(email='test@adduser.com', password=_pword, fname='Fname', lname="Lname")
         check = user.save_user()
         self.assertTrue(check, "User should be added")
         self.assertTrue(

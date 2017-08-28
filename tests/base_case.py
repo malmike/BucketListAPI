@@ -8,10 +8,11 @@ from datetime import date
 import json
 
 from instance import ENVIRONMENTS
-from manage import APP, db
+from myapp import db, create_app
 from myapp.models.user import User
 from myapp.models.bucketlist import BucketList
 from myapp.models.bucketlist_item import BucketListItem
+from instance import ENVIRONMENTS
 
 
 class BaseCase(TestCase):
@@ -24,7 +25,7 @@ class BaseCase(TestCase):
         """
         Creates a flask instance for testing
         """
-        return APP
+        return create_app(ENVIRONMENTS.get('testing'))
 
 
     def setUp(self):
@@ -55,8 +56,18 @@ class BaseCase(TestCase):
         Method adds users to the database for testing
         """
         _pword = "test"
-        user = User(email='test@test.com', password=_pword)
-        user2 = User(email='test2@test.com', password=_pword)
+        user = User(
+            fname='Ftest',
+            lname='Ltest',
+            email='test@test.com',
+            password=_pword
+        )
+        user2 = User(
+            fname='Ftest2',
+            lname='Ltest2',
+            email='test2@test.com',
+            password=_pword
+        )
         db.session.add(user)
         db.session.add(user2)
         db.session.commit()
@@ -68,8 +79,8 @@ class BaseCase(TestCase):
         Method adds bucketlists to the database for testing
         """
         user = User.query.filter_by(email='test@test.com').first()
-        bucketlist = BucketList(user_id=user.id, name='test_bucketlist')
-        bucketlist2 = BucketList(user_id=user.id, name='test_bucketlist2')
+        bucketlist = BucketList(user_id=user.id, name='test bucketlist')
+        bucketlist2 = BucketList(user_id=user.id, name='test bucketlist2')
         db.session.add(bucketlist)
         db.session.add(bucketlist2)
         db.session.commit()
@@ -80,30 +91,30 @@ class BaseCase(TestCase):
         """
         Method adds bucketlists items to the database for testing
         """
-        bucketlist = BucketList.query.filter_by(name='test_bucketlist').first()
+        bucketlist = BucketList.query.filter_by(name='test bucketlist').first()
         item = BucketListItem(
             finished_by=date(2020, 8, 22),
             bucketlist_id=bucketlist.id,
-            name='test_item'
+            name='test item'
         )
         item2 = BucketListItem(
             finished_by=date(2020, 9, 22),
             bucketlist_id=bucketlist.id,
-            name='test_item2'
+            name='test item2'
         )
         db.session.add(item)
         db.session.add(item2)
         db.session.commit()
 
 
-    def post_user_data(self, path, email, _pword="test"):
+    def post_user_data(self, path, data):
         """
         Method is used to send user data to the api basing on the
         path passed as an argument
         """
         return self.client.post(
             path,
-            data=json.dumps({"email": email, "password": _pword}),
+            data=json.dumps(data),
             content_type="application/json",
             follow_redirects=True
         )
@@ -115,8 +126,9 @@ class BaseCase(TestCase):
         basing on the email and password passed in the arguments
         """
         path = '/api/v1/auth/login'
-        response = self.post_user_data(path=path, email=email, _pword=password)
-        result = json.loads(response.data)
+        data = {"email": email, "password": password}
+        response = self.post_user_data(path, data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertTrue(result['auth_token'])
         return {'x-access-token': result['auth_token']}
 
