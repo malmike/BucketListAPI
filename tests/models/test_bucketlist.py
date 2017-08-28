@@ -17,7 +17,7 @@ class BucketListTests(BaseCase, TestCase):
         Method checks that a bucketlist is added to the data
         """
         bucketlist = BucketList.query.filter_by(id=1).first()
-        self.assertEqual(bucketlist.name, "test_bucketlist", "Name not added")
+        self.assertEqual(bucketlist.name, "test bucketlist", "Name not added")
         self.assertEqual(bucketlist.user_id, 1, "User Id not added")
         self.assertTrue(isinstance(bucketlist.created, datetime))
         self.assertTrue(isinstance(bucketlist.modified, datetime))
@@ -29,7 +29,7 @@ class BucketListTests(BaseCase, TestCase):
         to the database
         """
         user = User.query.filter_by(email="test2@test.com").first()
-        bucketlist = BucketList(name='test_bucketlist3', user_id=user.id)
+        bucketlist = BucketList(name='test bucketlist3', user_id=user.id)
         check = bucketlist.save_bucketlist()
         self.assertTrue(check, "Bucketlist should be added")
         self.assertTrue(
@@ -44,7 +44,7 @@ class BucketListTests(BaseCase, TestCase):
         with repeated names
         """
         user = User.query.filter_by(email="test@test.com").first()
-        bucketlist = BucketList(name='test_bucketlist', user_id=user.id)
+        bucketlist = BucketList(name='test bucketlist', user_id=user.id)
         check = bucketlist.save_bucketlist()
         self.assertFalse(check, "Bucketlist should not be added")
         self.assertFalse(
@@ -58,12 +58,12 @@ class BucketListTests(BaseCase, TestCase):
         Method checks that a bucketlist can be deleted from the database
         """
         #retrieve a test bucketlist from the database
-        bucketlist = BucketList.query.filter_by(name="test_bucketlist2").first()
+        bucketlist = BucketList.query.filter_by(name="test bucketlist2").first()
         self.assertTrue(bucketlist)
 
         #delete the bucketlist from the database
         bucketlist.delete_bucketlist()
-        verify_bucketlist = BucketList.query.filter_by(name="test_bucketlist2").first()
+        verify_bucketlist = BucketList.query.filter_by(name="test bucketlist2").first()
         self.assertFalse(
             verify_bucketlist,
             "BucketList that is deleted should not exist in the database"
@@ -75,6 +75,6 @@ class BucketListTests(BaseCase, TestCase):
         Method tests that the bucketlist item relation in the bucketlist model
         returns a list of bucketlist items specific to that bucketlist
         """
-        bucketlist = BucketList.query.filter_by(name="test_bucketlist").first()
+        bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
         self.assertTrue(isinstance(bucketlist.bucketlist_items, list))
 

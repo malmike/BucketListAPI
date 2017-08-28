@@ -20,10 +20,34 @@ class BucketListItem(BaseModel):
     completed = db.Column(db.Boolean, default=False)
 
 
-    def save_bucketlist_item(self):
+    def __item_exists(self, item, bucketlist_id):
+        """
+        Method is used to verify that a bucketlist name exists in
+        the database
+        """
+        if BucketListItem.query.filter_by(bucketlist_id=bucketlist_id).filter(BucketListItem.name.ilike(item)).first():
+            return True
+        return False
+
+
+    def save_bucketlist_item(self, name=None, completed=None):
         """
         Method is used to add a bucketlist item to the database
         """
+        if completed is not None:
+            self.completed = completed
+
+        if name is None and completed is None:
+            name = self.name
+
+        if name is None and completed is not None:
+            self.add_data_set()
+            return True
+
+        if self.__item_exists(name, self.bucketlist_id):
+            return False
+
+        self.name = name
         self.add_data_set()
         return True
 
@@ -32,7 +56,8 @@ class BucketListItem(BaseModel):
         """
         Method is used to add a bucketlist item to the database
         """
+        if not self.__item_exists(self.name, self.bucketlist_id):
+            return False
         self.delete_data_set()
-        db.session.commit()
         return True
 

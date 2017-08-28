@@ -3,6 +3,7 @@ File contains tests for the authentication endpoints like user authentication,
 user registration, logout and user verification
 """
 from unittest import TestCase
+from myapp.models.blacklist_token import BlackListToken
 import json
 
 from tests.base_case import BaseCase
@@ -17,10 +18,12 @@ class AuthEndPointsTests(BaseCase, TestCase):
         This method tests the user registration method
         """
         path = '/api/v1/auth/register'
-        response = self.post_user_data(path=path, email="test@testing.com")
-        result = json.loads(response.data)
+        data = {"email": "test@testing.com", "password":"test", "fname": 'Fname', "lname": "Lname"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Successfully Registered')
+        self.assertIsInstance(result['data'], dict)
 
 
     def test_user_already_registered(self):
@@ -30,8 +33,9 @@ class AuthEndPointsTests(BaseCase, TestCase):
         method in the BaseCase class
         """
         path = '/api/v1/auth/register'
-        response = self.post_user_data(path=path, email="test@test.com")
-        result = json.loads(response.data)
+        data = {"email": "test@test.com", "password": "test", "fname": 'Fname', "lname": "Lname"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 409)
         self.assertEqual(result['message'], 'User Exists')
 
@@ -42,9 +46,10 @@ class AuthEndPointsTests(BaseCase, TestCase):
         registered
         """
         path = '/api/v1/auth/register'
-        response = self.post_user_data(path=path, email="testtest.com")
-        result = json.loads(response.data)
-        self.assertEqual(response.status_code, 409)
+        data = {"email": "testtest.com", "password": "test", "fname": 'Fname', "lname": "Lname"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 400)
         self.assertEqual(result['message'], 'Invalid Email Address')
 
 
@@ -56,10 +61,12 @@ class AuthEndPointsTests(BaseCase, TestCase):
         method in the BaseCase class
         """
         path = '/api/v1/auth/login'
-        response = self.post_user_data(path=path, email="test@test.com", _pword="test")
-        result = json.loads(response.data)
+        data = {"email": "test@test.com", "password": "test"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 201)
         self.assertEqual(result['message'], 'Login Successful')
+        self.assertIsInstance(result['data'], dict)
 
 
     def test_non_existant_email(self):
@@ -68,8 +75,9 @@ class AuthEndPointsTests(BaseCase, TestCase):
         passed doesnot exists
         """
         path = '/api/v1/auth/login'
-        response = self.post_user_data(path=path, email="nonexitant@email.com", _pword="test")
-        result = json.loads(response.data)
+        data = {"email": "nonexitant@email.com", "password": "test"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], 'Failed to authenticate user')
 
@@ -80,7 +88,45 @@ class AuthEndPointsTests(BaseCase, TestCase):
         is incorrect
         """
         path = '/api/v1/auth/login'
-        response = self.post_user_data(path=path, email="test@test.com", _pword="wrong_pword")
-        result = json.loads(response.data)
+        data = {"email": "test@test.com", "password": "wrongpassword"}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
         self.assertEqual(response.status_code, 401)
         self.assertEqual(result['message'], 'Failed to authenticate user')
+
+
+    def test_logout(self):
+        """
+        This method tests that the logout function works
+        """
+        path = '/api/v1/auth/login'
+        email = "test@test.com"
+        pword = "test"
+        data = {"email": email, "password": pword}
+        response = self.post_user_data(path=path, data=data)
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 201)
+        headers = self.authentication_headers(email=email, password=pword)
+        blacklist_no = BlackListToken.query.filter_by().count()
+        response = self.client.get(
+            '/api/v1/auth/logout',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        new_blacklist_no = BlackListToken.query.filter_by().count()
+        result = json.loads(response.data.decode('utf-8'))
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(result['message'], 'Logout Successful')
+        self.assertNotEqual(blacklist_no, new_blacklist_no)
+
+        # TRY REACCESSING THE LOGOUT PATH
+        response = self.client.get(
+            '/api/v1/auth/logout',
+            content_type="application/json",
+            headers=headers,
+            follow_redirects=True
+        )
+        self.assertEqual(response.status_code, 401)
+        
+

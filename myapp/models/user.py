@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 
 from instance.config import Config
 from .base_model import BaseModel, db
+from .blacklist_token import BlackListToken
 from .bucketlist import BucketList
 from re import search
 
@@ -19,6 +20,8 @@ class User(BaseModel):
     """
     Class used as a representation of the user model
     """
+    fname = db.Column(db.String(25), nullable=False)
+    lname = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(50), index=True, nullable=False)
     _password = db.Column(db.String(255), nullable=False)
     # Use cascade='delete,all' to propagate the deletion of a User onto its Bucketlists
@@ -93,6 +96,8 @@ class User(BaseModel):
         """
         Method is used to verify authentication token
         """
+        if BlackListToken.check_blacklist(token):
+            return False
         serializer = Serializer(Config.SECRET_KEY)
         try:
             data = serializer.loads(token)
