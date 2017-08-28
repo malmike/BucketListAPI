@@ -28,6 +28,18 @@ USER = auth_api.model(
     }
 )
 
+LOGIN = auth_api.model(
+    'login',
+    {
+        'email':fields.String(required=True, description="User's Email", example="test@test.com"),
+        'password':fields.String(
+            required=True,
+            description="User's Password",
+            example="testpassword"
+        )
+    }
+)
+
 @auth_api.route('/register', endpoint='registration')
 class RegisterUser(Resource):
     """
@@ -84,7 +96,7 @@ class AuthenticateUser(Resource):
     @auth_api.response(201, 'Login Successful')
     @auth_api.response(400, 'Bad Request')
     @auth_api.response(500, 'Internal Server Error')
-    @auth_api.doc(model='User', body=USER)
+    @auth_api.doc(model='login', body=LOGIN)
     def post(self):
         """
         Handles post requests for authentication of a user
