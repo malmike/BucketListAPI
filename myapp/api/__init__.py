@@ -8,7 +8,10 @@ from .bucketlist_item_endpoints.views import bucketlist_item_api
 api_v1_blueprint = Blueprint('api', __name__)
 CORS(api_v1_blueprint)
 
-api_v1 = Api(api_v1_blueprint)
+api_v1 = Api(
+    api_v1_blueprint, version='1.0', title='BUCKETLIST API',
+    description='API to allow adding editing and deleteing of bucket lists'
+)
 
 api_v1.add_namespace(auth_api)
 api_v1.add_namespace(bucketlist_api)
