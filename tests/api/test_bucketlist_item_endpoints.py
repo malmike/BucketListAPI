@@ -75,7 +75,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         """
         Method tests the end point for updating a bucket list item using put
         """
-        data = {"name": "bucketlist item name", "completed": True}
+        data = {"name": "bucketlist item name", "completed": "true"}
         email = "test@test.com"
         _pword = "test"
         user = User.query.filter_by(email=email).first()
@@ -97,7 +97,7 @@ class BucketlistEndPointsTests(BaseCase, TestCase):
         Method tests the error raised when end point for updating a bucket list item
         using put contains the wrong id
         """
-        data = {"name": "bucketlist item name", "completed": True}
+        data = {"name": "bucketlist item name", "completed": "true"}
         email = "test@test.com"
         _pword = "test"
         user = User.query.filter_by(email=email).first()
