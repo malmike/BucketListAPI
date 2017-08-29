@@ -9,7 +9,7 @@
 This is an API for a bucket list designed using flask framework for python
 
 ### Live demo
-[https://m2bucketlistapi.herokuapp.com/](https://m2bucketlistapi.herokuapp.com/)
+[https://m2bucketlistapi.herokuapp.com/api/v1/](https://m2bucketlistapi.herokuapp.com/api/v1/)
 
 ### Set up
 You should have [git](https://git-scm.com/), [python](https://docs.python.org/), [pip](https://pypi.python.org/pypi/pip), [postgresql](https://www.postgresql.org/docs/current/static/tutorial.html), [virtualenv](https://virtualenv.pypa.io/en/stable/) installed
