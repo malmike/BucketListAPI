@@ -14,8 +14,8 @@ class Config(object):
     __secret_key = 'uMhwMM2q9L2Cg6kgTv2PFz7AbAUOsmMHuZCcwO0A7j6AdtzHuxAf9ctIUBZ4T0ea'
     SECRET_KEY = os.getenv('SECRET_KEY') or __secret_key
     AUTH_TOKEN_DURATION = os.getenv('TOKEN_DURATION') or 300
-    __dbname = "postgresql://localhost/bucketlist_api_dev"
-    SQLALCHEMY_DATABASE_URI = os.getenv('DB_NAME') or __dbname
+    __dbname = "postgresql://localhost/bucketlist_api"
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or __dbname
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEFAULT_PAGINATION_NUMBER = 20
 
@@ -25,6 +25,8 @@ class DevelopmentConfig(Config):
     """
     DEBUG = True
     BCRYPT_LOG_ROUNDS = 4
+    __dbname = "postgresql://localhost/bucketlist_api_dev"
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or __dbname
 
 
 class TestConfig(Config):
