@@ -18,12 +18,5 @@ MIGRATE = Migrate(APP, db)
 MANAGER = Manager(APP)
 MANAGER.add_command('db', MigrateCommand)
 
-@MANAGER.command
-def printConfig():
-    print(current_app.config['SQLALCHEMY_DATABASE_URI'])
-    print(current_app.config['AUTH_TOKEN_DURATION'])
-    print(current_app.config['SECRET_KEY'])
-    print(getenv('BUCKETLIST_ENV'))
-
 if __name__ == '__main__':
     MANAGER.run()
