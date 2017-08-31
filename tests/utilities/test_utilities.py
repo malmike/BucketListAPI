@@ -42,16 +42,16 @@ class UserTests(BaseCase, TestCase):
             verify_token(result['auth_token'])
         )
 
-    
+
     def test_strip_white_space(self):
         """
         Tests that white space is trimmed off string passed to strip white
         space method
         """
         self.assertEqual(strip_white_space("  testing  "), "testing")
-    
 
-    def test_strip_white_space_return_false(self):
+
+    def test_white_space_return_false(self):
         """
         Tests that if only spaces are passed to the strip white space method
         false is returned
@@ -70,7 +70,7 @@ class UserTests(BaseCase, TestCase):
     def test_check_for_symbols(self):
         """
         Tests that if a string or sentence is passed containing symbols, the
-        return will be false and true if there are no symbols, and also returns 
+        return will be false and true if there are no symbols, and also returns
         true when the boolean argument passed is true
         """
         self.assertFalse(check_for_symbols("The bucket |!$t", False))

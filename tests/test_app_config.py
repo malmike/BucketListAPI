@@ -68,3 +68,4 @@ class TestingConfigTests(TestCase):
             self.app.config['SQLALCHEMY_DATABASE_URI'],
             "postgresql://localhost/test_db"
         )
+        

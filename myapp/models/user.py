@@ -11,8 +11,6 @@ from instance.config import Config
 from .base_model import BaseModel, db
 from .blacklist_token import BlackListToken
 from .bucketlist import BucketList
-from re import search
-
 
 bcrypt = Bcrypt()
 
