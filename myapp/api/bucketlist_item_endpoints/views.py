@@ -97,7 +97,7 @@ class BucketListItemEndPoint(Resource):
                 return response, 201
             return abort(409, 'Bucketlist Item Exists')
         return abort(404, 'Bucketlist with ID {} not found in the database'.format(bucketlist_id))
-    
+
 
 
 @bucketlist_item_api.route(
@@ -142,7 +142,7 @@ class SingleBucketListItem(Resource):
             ).first()
             if item:
                 if item.save_bucketlist_item(
-                    name = name, 
+                    name = name,
                     completed = completed
                 ):
                     return item, 201
@@ -175,7 +175,7 @@ class SingleBucketListItem(Resource):
                     }
                     return response, 200
                 except Exception as e:
-                    return abort(500, message='Error updating bucketlist item:{}'.format(e.message))
+                    return abort(500, message='Error updating bucketlist item:{}'.format(e))
             return abort(
                 404,
                 'Bucketlist Item with ID {} not found in the database'.format(item_id)
