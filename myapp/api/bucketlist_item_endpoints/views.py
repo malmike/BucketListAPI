@@ -140,6 +140,12 @@ class SingleBucketListItem(Resource):
                 bucketlist_id=bucketlist_id,
                 id=item_id
             ).first()
+            if item and name == item.name:
+                if item.save_bucketlist_item(
+                    completed = completed
+                ):
+                    return item, 201
+                return abort(409, "Bucket list item already exists")
             if item:
                 if item.save_bucketlist_item(
                     name = name,
