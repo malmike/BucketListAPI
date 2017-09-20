@@ -53,4 +53,3 @@ def check_for_symbols(text, skip_check_symbols):
         if not word.isalnum():
             return False
     return True
-

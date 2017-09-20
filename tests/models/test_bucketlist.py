@@ -77,4 +77,3 @@ class BucketListTests(BaseCase, TestCase):
         """
         bucketlist = BucketList.query.filter_by(name="test bucketlist").first()
         self.assertTrue(isinstance(bucketlist.bucketlist_items, list))
-

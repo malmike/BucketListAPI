@@ -5,7 +5,7 @@ from .base_model import db
 
 class BlackListToken(db.Model):
     """
-    Class contains a model for blacklist tokens 
+    Class contains a model for blacklist tokens
     """
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(255), unique=True, nullable=False)
@@ -24,3 +24,4 @@ class BlackListToken(db.Model):
 
     def __repr__(self):
         return '<Token %r>' % self.token
+    
