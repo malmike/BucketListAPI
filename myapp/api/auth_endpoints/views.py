@@ -157,5 +157,3 @@ class Logout(Resource):
             return response, 201
         except Exception as e:
             return abort(500, 'Error logging out user:{}'.format(e))
-
-    

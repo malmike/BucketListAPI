@@ -108,6 +108,7 @@ class BucketListEndPoint(Resource):
         limit = request.args.get('limit') or Config.DEFAULT_PAGINATION_NUMBER
         page_limit = 100 if int(limit) > 100 else int(limit)
         page = request.args.get('page') or 1
+        page = int(page)
 
         if page_limit < 1 or page < 1:
             return abort(404, 'Page or Limit cannot be negative values')
